@@ -1,10 +1,6 @@
 @import "../../../styles/variables.scss";
 
 .stamp {
-  position: absolute;
-
-  // width: 200px;
-  // 	height: 148px;
   border-image: url(./stamp-border_2.png) 8 round;
   border-width: 6px;
   border-style: solid;
@@ -114,7 +110,7 @@
     stroke-linejoin: round;
   }
 
-  position: absolute;
+  // position: absolute;
   text-align: center;
 }
 

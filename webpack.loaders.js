@@ -1,78 +1,77 @@
 const path = require('path');
 
-// console.log('path', path);
-// console.log('path', path.join(__dirname, 'node_modules/font-awesome'));
-// const replace = path.join(__dirname, 'node_modules/font-awesome');
-// const src = path.join(__dirname, 'src');
-// const p = `(node_modules/font-awesome|${src})`;
-// const po = p.replace(/xxx/, replace);
-// const re = new RegExp(p);
-// console.log('po', re);
-
 module.exports = [
+  {
+    test: /\.scss$/,
+    exclude: [/[/\\]components[/\\]/, /[/\\](node_modules)[/\\]/],
+    use: ['style-loader', 'css-loader', 'postcss-loader', 'sass-loader']
+  },
+
+  {
+    test: /\.scss$/,
+    include: /[/\\](components)[/\\]/,
+    exclude: /[/\\](node_modules)[/\\]/,
+    loaders: [
+      'style-loader?sourceMap',
+      'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+      'postcss-loader',
+      'sass-loader'
+    ]
+  },
   {
     // global css
     test: /\.css$/,
-    include: /[/\\]node_modules[/\\]/,
+    // include: /[/\\]node_modules[/\\]/,
     // include: /[\/\\](globalStyles)[\/\\]/,
-    loaders: ['style-loader?sourceMap', 'css-loader'],
+    exclude: /[/\\](node_modules)[/\\]/,
+    loaders: ['style-loader?sourceMap', 'css-loader', 'postcss-loader'],
   },
   // local css modules
-  {
-    test: /\.scss$/,
-    include: /[/\\](components)[/\\]/,
-    exclude: /[/\\](node_modules)[/\\]/,
-    loaders: [
-      'style-loader?sourceMap',
-      'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-      'postcss-loader',
-    ],
-  },
 
+  // // // global scss
+  // // {
+  // //   test: /\variables.scss$/,
+  // //   exclude: /[/\\]components[/\\]/,
+  // //   // include: /[/\\](styles/variables.scss)[/\\]/,
+  // //   loaders: ['sass-variable-loader']
+  // // },
   // // global scss
   // {
-  //   test: /\variables.scss$/,
+  //   test: /\.scss$/,
   //   exclude: /[/\\]components[/\\]/,
-  //   // include: /[/\\](styles/variables.scss)[/\\]/,
-  //   loaders: ['sass-variable-loader']
+  //   use: [
+  //     {
+  //       loader: 'style-loader',
+  //     },
+  //     {
+  //       loader: 'css-loader',
+  //     },
+  //     {
+  //       loader: 'sass-loader',
+  //       options: {
+  //         includePaths: [path.resolve(__dirname, 'node_modules/bootstrap')],
+  //       },
+  //     },
+  //   ],
   // },
-  // global scss
-  {
-    test: /\.scss$/,
-    exclude: /[/\\]components[/\\]/,
-    use: [
-      {
-        loader: 'style-loader',
-      },
-      {
-        loader: 'css-loader',
-      },
-      {
-        loader: 'sass-loader',
-        options: {
-          includePaths: [path.resolve(__dirname, 'node_modules/bootstrap')],
-        },
-      },
-    ],
-  },
-  // local scss modules
-  {
-    test: /\.scss$/,
-    include: /[/\\](components)[/\\]/,
-    exclude: /[/\\](node_modules)[/\\]/,
-    loaders: [
-      'style-loader?sourceMap',
-      'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-      'postcss-loader',
-      'sass-loader',
-    ],
-  },
-  {
-    test: /\.less/,
-    // exclude: /[\/\\]src[\/\\]/,
-    include: /[/\\](node_modules)[/\\]/,
-    loaders: ['style-loader?sourceMap', 'css-loader', 'less-loader'],
-  },
+  // // local scss modules
+  // {
+  //   test: /\.scss$/,
+  //   include: /[/\\](components)[/\\]/,
+  //   exclude: /[/\\](node_modules)[/\\]/,
+  //   loaders: [
+  //     'style-loader?sourceMap',
+  //     'css-loader?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+  //     'postcss-loader',
+  //     'sass-loader',
+  //   ],
+  // },
+  // {
+  //   test: /\.less/,
+  //   // exclude: /[\/\\]src[\/\\]/,
+  //   include: /[/\\](node_modules)[/\\]/,
+  //   loaders: ['style-loader?sourceMap', 'css-loader', 'less-loader'],
+  // },
   {
     enforce: 'pre',
     test: /\.js$/,

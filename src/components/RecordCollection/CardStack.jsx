@@ -266,10 +266,7 @@ class Stack extends React.Component {
       data
     } = props;
 
-    this.enterTag = ::this.enterTag;
 
-    this.leaveTag = ::this.leaveTag;
-    this.hoverHandler = ::this.hoverHandler;
     this.labels = {};
 
     const tags = aggregateByTags(data).map(d => {
@@ -314,7 +311,7 @@ class Stack extends React.Component {
     };
   }
 
-  hoverHandler(focussedFrame) {
+  hoverHandler = (focussedFrame) => {
     const { data, cardWidth, width } = this.props;
     const { treemapData: oldTreemapData } = this.state;
     const frameOffset = cardWidth * 2;
@@ -374,7 +371,7 @@ class Stack extends React.Component {
   //   return false;
   // }
 
-  enterTag(key) {
+  enterTag = (key) => {
     if (key === null) this.setState(resetState);
 
     const { tags, firstItems, secItems } = resetState(this.state);
@@ -397,7 +394,7 @@ class Stack extends React.Component {
     });
   }
 
-  leaveTag() {
+  leaveTag = () => {
     this.setState(resetState);
   }
 

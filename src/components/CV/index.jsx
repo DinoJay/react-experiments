@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import * as d3 from 'd3-jetpack/build/d3v4+jetpack';
+import * as d3 from 'd3';
 import labella from 'labella';
 import { AxisBottom } from '@vx/axis';
 import { AnnotationLabel } from 'react-annotation';

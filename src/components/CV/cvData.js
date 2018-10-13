@@ -1,4 +1,4 @@
-import * as d3 from 'd3-jetpack/build/d3v4+jetpack';
+import * as d3 from 'd3';
 
 const timeFormat = d3.timeFormat('%d/%m/%Y');
 

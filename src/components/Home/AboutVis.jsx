@@ -1,19 +1,19 @@
-import * as d3 from 'd3-jetpack/build/d3v4+jetpack';
+import * as d3 from 'd3';
 import React from 'react';
 // import ReactDOM from 'react-dom';
 // import _ from 'lodash';
 import PropTypes from 'prop-types';
 import d3Radial from 'd3-radial';
-import { AnnotationLabel } from 'react-annotation';
+import {AnnotationLabel} from 'react-annotation';
 
-import { bboxCollide } from 'd3-bboxCollide';
+import {bboxCollide} from 'd3-bboxCollide';
 
 // import d3sketchy from '../utils/d3.sketchy';
 
 // import swoopyArrow from './utils/swoopyArrow';
 // import data from './aboutData';
 
-import { forceExtent } from '../utils/helper';
+import {forceExtent} from '../utils/helper';
 
 import cxx from './AboutVis.scss';
 
@@ -26,10 +26,10 @@ function outerRadiusPath(d, pad = 3) {
   const pathLength = Math.sqrt(diffX * diffX + diffY * diffY);
 
   // x and y distances from center to outside edge of target node
-  const srcOffX = diffX * (d.source.r + pad) / pathLength;
-  const srcOffY = diffY * (d.source.r + pad) / pathLength;
-  const tgtOffX = diffX * (d.target.r + pad) / pathLength;
-  const tgtOffY = diffY * (d.target.r + pad) / pathLength;
+  const srcOffX = (diffX * (d.source.r + pad)) / pathLength;
+  const srcOffY = (diffY * (d.source.r + pad)) / pathLength;
+  const tgtOffX = (diffX * (d.target.r + pad)) / pathLength;
+  const tgtOffY = (diffY * (d.target.r + pad)) / pathLength;
   return `M${d.source.x + srcOffX},${d.source.y + srcOffY}L${d.target.x -
     tgtOffX},${d.target.y - tgtOffY}`;
 }
@@ -45,11 +45,11 @@ const AboutVis = class AboutVis extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { annoData: [], nodeData: [], links: [] };
+    this.state = {annoData: [], nodeData: [], links: []};
   }
 
-  componentDidMount() {
-    const { width, height, data } = this.props; // this.props;
+  computeLayout = () => {
+    const {width, height, data} = this.props; // this.props;
 
     const nodeData = data.map(d => {
       d.width = d.r * 2;
@@ -59,17 +59,17 @@ const AboutVis = class AboutVis extends React.Component {
     });
 
     const links = [
-      { source: nodeData[0], target: nodeData[1] },
-      { source: nodeData[1], target: nodeData[2] },
-      { source: nodeData[2], target: nodeData[0] }
+      {source: nodeData[0], target: nodeData[1]},
+      {source: nodeData[1], target: nodeData[2]},
+      {source: nodeData[2], target: nodeData[0]}
     ];
     // { source: 2, target: 4 }]);
 
-    const annoData = data.map(d => ({ ...d.annotation })).map((d, i) => ({
+    const annoData = data.map(d => ({...d.annotation})).map((d, i) => ({
       width: 190,
       height: 70,
       type: 'anno',
-      data: { x: 0, y: 0 },
+      data: {x: 0, y: 0},
       note: {
         label: d.text,
         title: d.name,
@@ -77,7 +77,7 @@ const AboutVis = class AboutVis extends React.Component {
         orientation: 'topBottom',
         wrap: 200
       },
-      connector: { type: 'elbow' },
+      connector: {type: 'elbow'},
       src: data[i],
       subject: {
         radius: nodeData[i].r
@@ -124,8 +124,7 @@ const AboutVis = class AboutVis extends React.Component {
       [d.width / 2 + pad / 2, d.height / 2 + pad / 2]
     ];
 
-    d3
-      .forceSimulation(nodeData.concat(annoData))
+    d3.forceSimulation(nodeData.concat(annoData))
       // .alphaMin(0.8)
       .force('collide', bboxCollide(getBBox).strength(0.2))
       .force(
@@ -135,17 +134,17 @@ const AboutVis = class AboutVis extends React.Component {
           .bbox(d => [
             [-d.width / 2 - pad, -d.height / 2 - pad],
             [d.width / 2 + pad / 2, d.height / 2 + pad / 2]
-          ])
+          ]),
         // .strength(() => 0.7)
       )
       // .force('charge', d3.forceManyBody(d => d.height))
       .force(
         'Y',
-        d3.forceY(d => d.ty || 0).strength(d => (d.type === 'node' ? 1 : 0.3))
+        d3.forceY(d => d.ty || 0).strength(d => (d.type === 'node' ? 1 : 0.3)),
       )
       .force(
         'X',
-        d3.forceX(d => d.tx || 0).strength(d => (d.type === 'node' ? 1 : 0.3))
+        d3.forceX(d => d.tx || 0).strength(d => (d.type === 'node' ? 1 : 0.3)),
       )
       // .force('center', d3.forceCenter(width / 2, height / 2))
       .on('tick', () => {
@@ -168,10 +167,19 @@ const AboutVis = class AboutVis extends React.Component {
 
         // makeAnnotations.update();
         //
-        this.setState({ annoData, nodeData, links });
+        this.setState({annoData, nodeData, links});
       });
+  };
+
+  componentDidMount() {
     // .alphaMin(0.5)
     // this.setState({ annoData, nodeData });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.height !== prevProps.height) {
+    this.computeLayout();
+    }
   }
 
   // componentDidUpdate() {import { AnnotationXYThreshold, AnnotationCalloutCircle } from "react-annotation"
@@ -180,7 +188,7 @@ const AboutVis = class AboutVis extends React.Component {
   // }
 
   render() {
-    const { annoData, nodeData, links } = this.state;
+    const {annoData, nodeData, links} = this.state;
     //
     return (
       <svg width={this.props.width} height={this.props.height}>

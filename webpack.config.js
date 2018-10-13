@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const loaders = require('./webpack.loaders');
 
+const alias = require('./alias');
+
 // const apiTokens = require('./api_keys.json');
 
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
@@ -24,6 +26,7 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.jsx'],
+    alias
   },
   module: {
     rules: loaders,

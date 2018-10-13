@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 // import styled from 'styled-components';
 // import { LegendOrdinal } from '@vx/legend';
-import { scaleOrdinal } from '@vx/scale';
+import {scaleOrdinal} from '@vx/scale';
 
 import cx from './index.scss';
 
 // import stampStyle from './stamp.scss';
 
-import Grid from 'mygrid/dist';
-// import Brush from './Brush';
-import Timeline from './Timeline';
 
 const ft = '%d/%m/%Y';
 const parseDate = d3.timeParse(ft);
@@ -69,20 +66,22 @@ const calcMatrix = (len, step = 7) => {
   if (Math.floor(initRows) * Math.floor(initCols) >= len) {
     const rows = Math.floor(initRows);
     const cols = Math.floor(initCols / step) * step;
-    return { cols, rows };
-  } else if (Math.floor(initRows) * Math.ceil(initCols) >= len) {
+    return {cols, rows};
+  }
+  if (Math.floor(initRows) * Math.ceil(initCols) >= len) {
     const rows = Math.floor(initRows);
     const cols = Math.ceil(initCols / step) * step;
-    return { cols, rows };
-  } else if (Math.ceil(initRows) * Math.floor(initCols) >= len) {
+    return {cols, rows};
+  }
+  if (Math.ceil(initRows) * Math.floor(initCols) >= len) {
     console.log('3');
     const rows = Math.ceil(initRows);
     const cols = Math.floor(initCols / step) * step;
-    return { cols, rows };
+    return {cols, rows};
   }
   const rows = Math.ceil(initRows);
   const cols = Math.ceil(initCols / step) * step;
-  return { cols, rows };
+  return {cols, rows};
 };
 
 const tileStyle = {
@@ -96,17 +95,16 @@ const colorScale = scaleOrdinal({
 });
 
 const Legend = () => (
-  <div style={{ height: '10%', display: 'flex' }}>
+  <div style={{height: '10%', display: 'flex'}}>
     {colorScale.domain().map(d => (
       <div>
-        <h3 style={{ marginRight: '10px' }}>{d}</h3>
+        <h3 style={{marginRight: '10px'}}>{d}</h3>
         <div
           style={{
             marginRight: '20px',
             width: '25px',
             height: '25px'
-          }}
-        >
+          }}>
           <div
             className={cx.dayTile}
             style={{
@@ -119,7 +117,7 @@ const Legend = () => (
   </div>
 );
 
-const ColHeader = ({ cols }) => (
+const ColHeader = ({cols}) => (
   <div
     style={{
       marginLeft: '5%',
@@ -128,15 +126,14 @@ const ColHeader = ({ cols }) => (
       // borderBottom: '1px solid black',
       // boxShadow: '3px 3px black'
       // opacity: 0.56
-    }}
-  >
-    <Grid rows={1} cols={cols} span={1} gap={1}>
+    }}>
+    <div style={{display: 'grid'}}>
       {d3.range(0, cols).map((d, i) => (
         <div className={cx.shaky} style={tileStyle}>
-          {i % 7 + 1}
+          {(i % 7) + 1}
         </div>
       ))}
-    </Grid>
+    </div>
     <div
       style={{
         width: 0,
@@ -149,14 +146,14 @@ const ColHeader = ({ cols }) => (
   </div>
 );
 
-const RowHeader = ({ timerange, timeInterval: tval, data, onClick }) => (
-  <Grid cols={1} span={1} gap={1}>
+const RowHeader = ({timerange, timeInterval: tval, data, onClick}) => (
+  <div style={{display: 'grid'}}>
     {tval.range(...timerange).map(date => (
       <div className={cx.shaky} style={tileStyle} onClick={onClick}>
         {d3.timeFormat(timeFormat(data))(date)}
       </div>
     ))}
-  </Grid>
+  </div>
 );
 
 class Projects extends React.Component {
@@ -179,7 +176,7 @@ class Projects extends React.Component {
     // const days = d3.timeDay.count(dateRange); // 31
     const data = d3.timeDay
       .range(...dateRange)
-      .map(date => ({ dummy: true, date, selected: true }));
+      .map(date => ({dummy: true, date, selected: true}));
 
     this.state = {
       data
@@ -196,8 +193,8 @@ class Projects extends React.Component {
   }
 
   render() {
-    const { width, height } = this.props;
-    const { data } = this.state;
+    const {width, height} = this.props;
+    const {data} = this.state;
     // const gridHeight = height - 200;
     // const gridWidth = width - 200;
     // const gap = 20;
@@ -206,25 +203,24 @@ class Projects extends React.Component {
     // console.log('allData.length', allData.length);
 
     // console.log('cols', cols);
-    const { cols, rows } = calcMatrix(data.length, data.length >= 7 ? 7 : 0);
+    const {cols, rows} = calcMatrix(data.length, data.length >= 7 ? 7 : 0);
     const timerange = d3.extent(data, d => d.date);
     const tval = calcTimeInterval(data);
     // const timerange = d3.timeMonth.range(timerange).map(d => <div>Month</div>);
 
     return (
-      <div style={{ width: `${width}px`, height: `${height}px` }}>
+      <div style={{width: `${width}px`, height: `${height}px`}}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-around',
             width: '100%',
             height: '90%'
-          }}
-        >
-          <div style={{ height: '94%', width: '100%' }}>
+          }}>
+          <div style={{height: '94%', width: '100%'}}>
             <Legend />
             <ColHeader cols={cols} />
-            <div style={{ display: 'flex', width: '100%', height: '100%' }}>
+            <div style={{display: 'flex', width: '100%', height: '100%'}}>
               <div
                 style={{
                   width: '5%',
@@ -232,9 +228,8 @@ class Projects extends React.Component {
                   // boxShadow: '3px 0px grey',
                   marginRight: '10px'
                   // opacity: 0.56
-                }}
-              >
-                <div style={{ height: '100%', paddingRight: '10px' }}>
+                }}>
+                <div style={{height: '100%', paddingRight: '10px'}}>
                   <RowHeader
                     timeInterval={tval}
                     timerange={timerange}
@@ -242,18 +237,18 @@ class Projects extends React.Component {
                   />
                 </div>
               </div>
-              <Grid rows={rows} cols={cols} gap={1.2}>
+              <div style={{display: 'grid'}}>
                 {data.map(d => (
                   <Activity
                     {...d}
                     style={{
                       background: colorScale(
-                        scaleDomain[Math.floor(Math.random() * 100) % 4]
+                        scaleDomain[Math.floor(Math.random() * 100) % 4],
                       )
                     }}
                   />
                 ))}
-              </Grid>
+              </div>
             </div>
           </div>
         </div>
@@ -268,14 +263,13 @@ const exampleProject = {
   date: '12/04/2013'
 };
 
-const Activity = ({ title, date, description, selected, key, style }) => (
+const Activity = ({title, date, description, selected, key, style}) => (
   <div
     key={key}
     className={cx.dayTile}
-    style={{ ...style, width: '100%', height: '100%' }}
-  >
+    style={{...style, width: '100%', height: '100%'}}>
     <div className={cx.description}>
-      <div></div>
+      <div />
     </div>
   </div>
 );
@@ -286,7 +280,7 @@ Projects.defaultProps = {
   type: 'Project',
   data: d3
     .range(0, 5)
-    .map(i => ({ ...exampleProject, title: `${exampleProject.title} ${i}` }))
+    .map(i => ({...exampleProject, title: `${exampleProject.title} ${i}`}))
 };
 
 export default Projects;

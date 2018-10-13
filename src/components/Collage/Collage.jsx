@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 // import $ from 'jquery';
-import { forceSurface } from 'd3-force-surface';
+import {forceSurface} from 'd3-force-surface';
 // import chroma from 'chroma-js';
 
 // import { bboxCollide } from 'd3-bboxCollide';
@@ -14,165 +14,56 @@ import DotDotDot from '../utils/DotDotDot';
 
 // import pics from './collagePics';
 
-import { rectCollide, bounds } from '../utils/helper';
+import {rectCollide, bounds} from '../utils/helper';
 
 const boundingBox = (width, height, padX = 0, padY = 0) => [
   {
-    from: { x: padX, y: padY },
-    to: { x: padX, y: height - padY }
+    from: {x: padX, y: padY},
+    to: {x: padX, y: height - padY}
   },
   {
-    from: { x: padX, y: height - padY },
-    to: { x: width, y: height - padY }
+    from: {x: padX, y: height - padY},
+    to: {x: width, y: height - padY}
   },
   {
-    from: { x: width, y: height - padY },
-    to: { x: width, y: padY }
+    from: {x: width, y: height - padY},
+    to: {x: width, y: padY}
   },
   {
-    from: { x: width, y: padY },
-    to: { x: padX, y: padY }
+    from: {x: width, y: padY},
+    to: {x: padX, y: padY}
   }
 ];
 
 class Title extends Component {
   static propTypes = {
-    children: PropTypes.object.isRequired
+    children: PropTypes.object.isRequired,
+    style: PropTypes.object
   };
 
-  // constructor(props) {
-  //   super(props);
-  //   // this.state = { width: 342, height: 180 };
-  // }
-
-  // componentDidMount() {
-  //   const el = ReactDOM.findDOMNode(this);
-  //   const { width, height } = el.getBoundingClientRect();
-  //   // console.log('el.getBoundingClientRect', el.getBoundingClientRect());
-  //   // this.setState({ width, height });
-  // }
+  static defaultProps = {
+    style: {}
+  };
 
   render() {
-    const { children } = this.props;
-    // const { width, height } = this.state;
-    // console.log(
-    //   'getBoundingClientRect',
-    //   ReactDOM.findDOMNode(this).getBoundingClientRect()
-    // );
+    const {children, style} = this.props;
     return (
       <div
-        className={`${cxx.title} child-borders`}
+        className={`${
+          cxx.title
+        } child-borders flex flex-col justify-center items-center`}
         style={{
-          width: '100%',
-          height: '100%',
           pointerEvents: 'none',
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 2
-          // background: 'white'
-        }}
-      >
-        {d3.range(0, 9).map((_, i) => (
-          <span
-            style={{
-              transform: `translateZ(${i * 5}px)`,
-              position: 'absolute',
-              width: '530px',
-              height: '120px',
-              // opacity: 0.02,
-              background: i === 0 ? 'lightgoldenrodyellow' : null,
-              opacity: i === 0 ? 0.7 : null
-            }}
-          >
-            <div>
-              <svg>
-                <defs>
-                  <linearGradient id="grad1" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop
-                      offset="0%"
-                      style={{ stopColor: '#FF6600', stopOpacity: 1 }}
-                    />
-                    <stop
-                      offset="100%"
-                      style={{ stopColor: '#FFF000', stopOpacity: 1 }}
-                    />
-                  </linearGradient>
-                </defs>
-                {/* TODO */}
-                <text
-                  transform={`translate(${-100}, ${-10})`}
-                  className={cxx.text}
-                  fill="url(#grad1)"
-                  y="100"
-                >
-                  {children.title}
-                </text>
-              </svg>
-            </div>
-          </span>
-        ))}
+          zIndex: 2,
+          ...style
+        }}>
+        <div className="border flex-grow flex flex-col justify-center items-center bg-white">
+          <h1 style={{fontSize: '4rem'}}>{children}</h1>
+        </div>
       </div>
     );
   }
-}
-
-function computeLayout(nextProps, callback) {
-  const { data, width, height } = nextProps;
-
-  const titleDatum = {
-    title: 'Brussels',
-    fx: width / 2,
-    fy: height / 2,
-    width: 666,
-    height: 200,
-    header: true
-  };
-
-  const nodes = data
-    .map((d, i) => ({
-      ...d,
-      width: d.images.low_resolution.width / 3,
-      height: d.images.low_resolution.height / 3,
-      url: d.images.low_resolution.url,
-      vx: width / 2,
-      vy:
-        i % 2 === 0
-          ? d.images.low_resolution.height / 3
-          : height - d.images.low_resolution.height / 3 // Math.round(Math.random() * (height - 20))
-    }))
-    .concat([titleDatum]);
-  d3
-    .forceSimulation(nodes)
-    .force('collide', d3.forceCollide(d => d.height / 2).strength(0.8))
-    .force(
-      'charge',
-      d3.forceManyBody(-10000)
-      // .distanceMin(-1000)
-      // .theta(0)
-    )
-    // // .force('bbox', forceContainer([[0, 0], [width, height]]))
-    // .force('center', d3.forceCenter(width / 2, height / 2))
-    .force('cx', rectCollide(nodes))
-    .force(
-      'bounds',
-      bounds(nodes)
-        .width(d => d.width)
-        .height(d => d.height)
-    )
-    .force(
-      'container',
-      forceSurface()
-        .elasticity(0.5)
-        .surfaces(boundingBox(width, height))
-        // .oneWay(true)
-        .radius(d => d.height / 2)
-    )
-    // .alphaMin(0.6)
-    .on('end', () => {
-      callback(nodes);
-    });
 }
 
 class Collage extends React.Component {
@@ -181,52 +72,45 @@ class Collage extends React.Component {
     height: PropTypes.number.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    // this.computeLayout = this.computeLayout.bind(this);
-    this.state = { nodes: [], data: [] };
-  }
-
-  componentDidMount() {
-    computeLayout(this.props, nodes => this.setState({ nodes }));
-  }
-  componentWillReceiveProps(nextProps) {
-    computeLayout(nextProps, nodes => this.setState({ nodes }));
-  }
-
   render() {
-    const { width, height } = this.props;
-    const { nodes } = this.state;
+    const {width, height, data} = this.props;
 
-    const stampNodes = nodes.filter(d => !d.header);
-    const titleNode = nodes.find(d => d.header) || {};
+    const stampNodes = data.filter(d => !d.header).slice(0, 32);
 
-    console.log('nodes', nodes);
-    if (nodes.length === 0)
-      return (
-        <h1 className="centered" style={{ lineHeight: `${height}px` }}>
-          {'Computing Layout'}<DotDotDot />
-        </h1>
-      );
-    // <span className={cxx.border}>&#x24B8; Pour les chomeurs</span>
+    console.log('titleNode', data);
+
+    console.log('nodes', data);
+    const colNumber = 7;
+    const rowNumber = 5;
     return (
       <div
+        className="flex-grow"
         style={{
-          width: `${width}px`,
+          // width: `${width}px`,
           height: `${height}px`,
-          position: 'relative'
-        }}
-      >
-        <Title key="title">{titleNode}</Title>
+          position: 'relative',
+          display: 'grid',
+          gridTemplateColumns: `repeat(${colNumber}, 1fr)`,
+          gridTemplateRows: `repeat( ${rowNumber}, 1fr)`,
+        }}>
+        <Title
+          style={{
+            gridColumn: `${Math.floor(colNumber / 2)} / span 3`,
+            gridRow: `${Math.ceil(rowNumber / 2)}/ span 1`
+          }}>
+          Brussels
+        </Title>
         {stampNodes.map(d => (
           <div
             className={cxx.stamp}
             style={{
-              left: `${d.x - d.width / 2}px`,
-              top: `${d.y - d.height / 2}px`
-            }}
-          >
-            <img src={d.url} alt={d.title} width={d.width} height={d.height} />
+              gridColumn: 'span 1',
+              gridRow: 'span 1',
+              width: '120%',
+              height: '120%',
+              background: 'gold'
+            }}>
+            test
           </div>
         ))}
       </div>
