@@ -10,30 +10,8 @@ import {forceSurface} from 'd3-force-surface';
 import cxx from './styles/collage.scss';
 
 import DotDotDot from '../utils/DotDotDot';
-// import postcardStyle from '../cxx/postcard.scss';
-
-// import pics from './collagePics';
 
 import {rectCollide, bounds} from '../utils/helper';
-
-const boundingBox = (width, height, padX = 0, padY = 0) => [
-  {
-    from: {x: padX, y: padY},
-    to: {x: padX, y: height - padY}
-  },
-  {
-    from: {x: padX, y: height - padY},
-    to: {x: width, y: height - padY}
-  },
-  {
-    from: {x: width, y: height - padY},
-    to: {x: width, y: padY}
-  },
-  {
-    from: {x: width, y: padY},
-    to: {x: padX, y: padY}
-  }
-];
 
 class Title extends Component {
   static propTypes = {
@@ -46,20 +24,23 @@ class Title extends Component {
   };
 
   render() {
-    const {children, style} = this.props;
+    const {children, style, className} = this.props;
+    const pad = 7;
     return (
       <div
         className={`${
           cxx.title
-        } child-borders flex flex-col justify-center items-center`}
+        } child-borders flex flex-col justify-center items-center ${className}`}
         style={{
-          pointerEvents: 'none',
-          display: 'flex',
-          zIndex: 2,
-          ...style
+          ...style,
+          width: '130%',
+          transform: 'translateX(-10%)',
+
+          textShadow: `${1 + pad}px ${1 + pad}px #fe4902, ${2 + pad}px ${2 +
+            pad}px #fe4902, ${3 + pad}px ${3 + pad}px #fe4902`
         }}>
-        <div className="border flex-grow flex flex-col justify-center items-center bg-white">
-          <h1 style={{fontSize: '4rem'}}>{children}</h1>
+        <div className="flex-grow flex flex-col justify-center items-center ">
+          <h1 className={cxx.text}>{children}</h1>
         </div>
       </div>
     );
@@ -75,16 +56,21 @@ class Collage extends React.Component {
   render() {
     const {width, height, data} = this.props;
 
-    const stampNodes = data.filter(d => !d.header).slice(0, 32);
+    const stampNodes = data.filter(d => !d.header).slice(0, 40);
 
     console.log('titleNode', data);
 
     console.log('nodes', data);
-    const colNumber = 7;
+    const colNumber = 9;
     const rowNumber = 5;
+    const photoColSpan = 1;
+    const photoRowSpan = 1;
+    const titleColSpan = 5;
+    const titleRowSpan = 1;
+    // const rowSpan = 1;
     return (
       <div
-        className="flex-grow"
+        className="flex-grow pr-8 pb-6"
         style={{
           // width: `${width}px`,
           height: `${height}px`,
@@ -94,19 +80,21 @@ class Collage extends React.Component {
           gridTemplateRows: `repeat( ${rowNumber}, 1fr)`,
         }}>
         <Title
+          className="z-10 bg-white border"
           style={{
-            gridColumn: `${Math.floor(colNumber / 2)} / span 3`,
-            gridRow: `${Math.ceil(rowNumber / 2)}/ span 1`
+            gridColumn: `${3} / span ${titleColSpan}`,
+            gridRow: `${Math.ceil(rowNumber / 2)}/ span ${titleRowSpan}`
           }}>
           Brussels
         </Title>
+
         {stampNodes.map(d => (
           <div
             className={cxx.stamp}
             style={{
-              gridColumn: 'span 1',
-              gridRow: 'span 1',
-              width: '120%',
+              gridColumn: `span ${photoColSpan}`,
+              gridRow: `span ${photoRowSpan}`,
+              width: '130%',
               height: '120%',
               background: 'gold'
             }}>

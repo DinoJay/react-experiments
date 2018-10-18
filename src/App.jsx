@@ -56,6 +56,38 @@ const resize = win => {
   return {width, height, picDim};
 };
 
+const Nav = ({clickHandler}) => (
+  <div className={cxx.list}>
+    <ul>
+      <li>
+        <a onClick={clickHandler} href="/">
+          Home <small>(...is where I want to be)</small>
+        </a>
+      </li>
+      <li>
+        <a onClick={clickHandler} href="/CV">
+          CV <small>(my so called adult life)</small>
+        </a>
+      </li>
+      <li>
+        <a onClick={clickHandler} href="/Collage">
+          Collage <small>(friends and spaces)</small>
+        </a>
+      </li>
+      <li>
+        <a onClick={clickHandler} href="/RecordCollection">
+          Record Collection
+        </a>
+      </li>
+      <li>
+        <a onClick={clickHandler} href="/Projects">
+          Blog <small>(projects, mixtapes and other stuff - unfinished)</small>
+        </a>
+      </li>
+    </ul>
+  </div>
+);
+
 class App extends React.Component {
   static propTypes = {
     path: PropTypes.string.isRequired
@@ -80,20 +112,6 @@ class App extends React.Component {
     window.addEventListener('resize', () => {
       this.setState(resize(window));
     });
-  }
-
-  componentDidMount() {
-    // window.onLoad = function() {
-    // const width = 800;
-    // const height = 600;
-    // const fontSize = null;
-    // const pad = 20; // this.props;
-    // // console.log('window', window.innerWidth);
-    // const main = ReactDOM.findDOMNode(this.main);
-    // const height = ReactDOM.findDOMNode(this.cont).clientHeight;
-    // const width = ReactDOM.findDOMNode(this.cont).clientWidth;
-    // this.setState({ height, width });
-    // };
   }
 
   // componentWillReceiveProps({ path: newPath }) {
@@ -136,44 +154,15 @@ class App extends React.Component {
     const marginTop = 20;
 
     return (
-      <div className="container flex" style={{marginTop: `${marginTop}px`}}>
+      <div
+        className="container m-4 flex w-screen h-screen"
+        style={{marginTop: `${marginTop}px`}}>
         <div className={cxx.navCont}>
           <div className={`${cxx.nav} border-3`}>
             <div className={cxx.title}>
               <span>Jan Maushagen</span>&nbsp;/&nbsp; <br /> {pathString(path)}
             </div>
-            <div className={cxx.list}>
-              <ul>
-                <li>
-                  <a onClick={this.clickHandler} href="/">
-                    Home <small>(...is where I want to be)</small>
-                  </a>
-                </li>
-                <li>
-                  <a onClick={this.clickHandler} href="/CV">
-                    CV <small>(my so called adult life)</small>
-                  </a>
-                </li>
-                <li>
-                  <a onClick={this.clickHandler} href="/Collage">
-                    Collage <small>(friends and spaces)</small>
-                  </a>
-                </li>
-                <li>
-                  <a onClick={this.clickHandler} href="/RecordCollection">
-                    Record Collection
-                  </a>
-                </li>
-                <li>
-                  <a onClick={this.clickHandler} href="/Projects">
-                    Blog{' '}
-                    <small>
-                      {'(projects, mixtapes and other stuff - unfinished)'}
-                    </small>
-                  </a>
-                </li>
-              </ul>
-            </div>
+            <Nav clickHandler={this.clickHandler} />
           </div>
         </div>
         <div id={cxx.right} className={`${cxx.mainCont} flex flex-col`}>
@@ -186,7 +175,7 @@ class App extends React.Component {
                 zIndex: back ? 3 : null,
               }}>
               <div
-                className={`${cxx.front} flex flex-col`}
+                className={`${cxx.front} flex flex-col overflow-visible`}
                 style={{
                   width: `${width}px`,
                   height: `${height}px`,
@@ -195,7 +184,7 @@ class App extends React.Component {
                 <div>{!back ? ActiveElement : PassiveElement}</div>
               </div>
               <div
-                className={`${cxx.back} flex flex-col`}
+                className={`${cxx.back} flex flex-col overflow-visible`}
                 style={{
                   width: `${width}px`,
                   height: `${height}px`,

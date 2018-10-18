@@ -34,9 +34,11 @@ const WebFontConfig = {
   //   urls: ['./styles/font.css']
   // },
   google: {
-    families: ['Frijole', 'Concert One', 'Slackey']
+    families: ['Frijole', 'Concert One', 'Slackey', 'Bowlby One SC']
   }
 };
+
+WebFont.load(WebFontConfig);
 
 const render = Component => {
   ReactDOM.render(

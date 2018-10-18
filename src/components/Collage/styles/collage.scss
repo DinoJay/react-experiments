@@ -32,7 +32,7 @@
 
 .stamp:hover {
   z-index: 1000;
-  transform: scale(2);
+  transform: scale(1.3);
   transition: transform .15s linear;
 }
 
@@ -102,12 +102,20 @@
   // z-index: 2;
 
   .text {
-    font-family: "frijole";
-    font-weight: 400;
-    font-size: 5.5em;
+    font-family: "bowlby one sc";
+    font-weight: 700;
+    font-size: 5rem;
+    // transform: translateX(50%);
+    color: black;
     stroke: black;
-    stroke-width: 1px;
+    stroke-width: 4px;
     stroke-linejoin: round;
+    -moz-text-fill-color: white;
+    -webkit-text-fill-color: white;
+    -moz-text-stroke-color: black;
+    -webkit-text-stroke-color: black;
+    -moz-text-stroke-width: 4px;
+    -webkit-text-stroke-width: 4px;
   }
 
   // position: absolute;
