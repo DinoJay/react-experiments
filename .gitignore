@@ -1,6 +1,7 @@
 # Logs
 logs
 *.log
+firebase_conf.json
 
 # Runtime data
 pids

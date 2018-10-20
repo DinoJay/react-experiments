@@ -58,9 +58,6 @@ class Collage extends React.Component {
 
     const stampNodes = data.filter(d => !d.header).slice(0, 40);
 
-    console.log('titleNode', data);
-
-    console.log('nodes', data);
     const colNumber = 9;
     const rowNumber = 5;
     const photoColSpan = 1;
@@ -80,7 +77,7 @@ class Collage extends React.Component {
           gridTemplateRows: `repeat( ${rowNumber}, 1fr)`,
         }}>
         <Title
-          className="z-10 bg-white border"
+          className="z-10 bg-white border-4 border-black"
           style={{
             gridColumn: `${3} / span ${titleColSpan}`,
             gridRow: `${Math.ceil(rowNumber / 2)}/ span ${titleRowSpan}`
@@ -98,7 +95,7 @@ class Collage extends React.Component {
               height: '120%',
               background: 'gold'
             }}>
-            test
+            <img src={d.src} />
           </div>
         ))}
       </div>
