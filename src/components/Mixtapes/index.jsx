@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import prune from 'json-prune';
 
-import * as d3 from 'd3';
-import Collage from './Collage';
+// import * as d3 from 'd3';
+import ScreenShotDiary from './ScreenshotDiary';
 
-import imgData from './collagePics';
+import screenshotData from './screenshotData';
 
-class CollageContainer extends Component {
+'https://api.mixcloud.com/deli-jay/cloudcasts/'
+
+class ScreenshotDiaryContainer extends Component {
   static propTypes = {
     lessData: PropTypes.bool
   };
@@ -22,8 +24,8 @@ class CollageContainer extends Component {
   componentDidMount() {}
 
   render() {
-    return <Collage {...this.props} data={imgData} />;
+    return <ScreenShotDiary {...this.props} data={screenshotData} />;
   }
 }
 
-export default CollageContainer;
+export default ScreenshotDiaryContainer;

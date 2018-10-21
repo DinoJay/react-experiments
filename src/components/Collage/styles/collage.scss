@@ -33,48 +33,48 @@
 .stamp:hover {
   z-index: 1000;
   transform: scale(1.3);
-  transition: transform .15s linear;
+  transition: transform 200ms linear;
 }
 
 .stamp {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0);
 }
 
-.title:nth-child(2) {
+.title {
   transform: translateZ(5px);
 }
 
-.title:nth-child(3) {
-  transform: translateZ(10px);
-}
-
-.title:nth-child(4) {
-  transform: translateZ(15px);
-}
-
-.title:nth-child(5) {
-  transform: translateZ(20px);
-}
-
-.title:nth-child(6) {
-  transform: translateZ(25px);
-}
-
-.title:nth-child(7) {
-  transform: translateZ(30px);
-}
-
-.title:nth-child(8) {
-  transform: translateZ(35px);
-}
-
-.title:nth-child(9) {
-  transform: translateZ(40px);
-}
-
-.title:nth-child(10) {
-  transform: translateZ(45px);
-}
+// .title:nth-child(3) {
+//   transform: translateZ(10px);
+// }
+//
+// .title:nth-child(4) {
+//   transform: translateZ(15px);
+// }
+//
+// .title:nth-child(5) {
+//   transform: translateZ(20px);
+// }
+//
+// .title:nth-child(6) {
+//   transform: translateZ(25px);
+// }
+//
+// .title:nth-child(7) {
+//   transform: translateZ(30px);
+// }
+//
+// .title:nth-child(8) {
+//   transform: translateZ(35px);
+// }
+//
+// .title:nth-child(9) {
+//   transform: translateZ(40px);
+// }
+//
+// .title:nth-child(10) {
+//   transform: translateZ(45px);
+// }
 
 @keyframes wobble {
   0%,100% {

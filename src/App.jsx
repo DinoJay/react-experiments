@@ -12,6 +12,7 @@ import Collage from './components/Collage';
 import RecordCollection from './components/RecordCollection';
 import Projects from './components/Projects';
 import CV from './components/CV';
+import ScreenshotDiary from './components/ScreenshotDiary';
 // import Nav from './components/Nav';
 // import cxx from './components/cxx/nav.scss';
 // import './global/annotation.scss';
@@ -35,6 +36,8 @@ const selectElement = (path, pr) => {
       return <RecordCollection {...pr} />;
     case '/Projects':
       return <Projects {...pr} />;
+    case '/ScreenshotDiary':
+      return <ScreenshotDiary {...pr} />;
     default:
       return <div>Unknown path</div>;
   }
@@ -80,6 +83,12 @@ const Nav = ({clickHandler}) => (
         </a>
       </li>
       <li>
+        <a onClick={clickHandler} href="/ScreenshotDiary">
+          Screenshot Diary{' '}
+          <small>(my unfinished ramblings when the day is over)</small>
+        </a>
+      </li>
+      <li className="hidden">
         <a onClick={clickHandler} href="/Projects">
           Blog <small>(projects, mixtapes and other stuff - unfinished)</small>
         </a>

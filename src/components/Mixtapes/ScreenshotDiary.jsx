@@ -7,47 +7,7 @@ import {forceSurface} from 'd3-force-surface';
 
 // import { bboxCollide } from 'd3-bboxCollide';
 
-import cxx from './styles/collage.scss';
-
-import DotDotDot from '../utils/DotDotDot';
-
-import {rectCollide, bounds} from '../utils/helper';
-
-class Title extends Component {
-  static propTypes = {
-    children: PropTypes.object.isRequired,
-    style: PropTypes.object
-  };
-
-  static defaultProps = {
-    style: {}
-  };
-
-  render() {
-    const {children, style, className} = this.props;
-    const pad = 7;
-    return (
-      <div
-        className={`${
-          cxx.title
-        } child-borders flex flex-col justify-center items-center ${className}`}
-        style={{
-          ...style,
-          width: '130%',
-          transform: 'translateX(-10%) rotate(-3deg)',
-
-          textShadow: `${1 + pad}px ${1 + pad}px #fe4902, ${2 + pad}px ${2 +
-            pad}px #fe4902, ${3 + pad}px ${3 + pad}px #fe4902`
-        }}>
-        <div className="flex-grow flex flex-col justify-center items-center ">
-          <h1 className={cxx.text}>{children}</h1>
-        </div>
-      </div>
-    );
-  }
-}
-
-class Collage extends React.Component {
+class ScreenshotDiary extends React.Component {
   static propTypes = {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired
@@ -55,8 +15,6 @@ class Collage extends React.Component {
 
   render() {
     const {width, height, data} = this.props;
-
-    const stampNodes = data.filter(d => !d.header).slice(0, 40);
 
     const colNumber = 9;
     const rowNumber = 5;
@@ -76,18 +34,8 @@ class Collage extends React.Component {
           gridTemplateColumns: `repeat(${colNumber}, 1fr)`,
           gridTemplateRows: `repeat( ${rowNumber}, 1fr)`,
         }}>
-        <Title
-          className="z-10 bg-white border-4 border-black"
-          style={{
-            gridColumn: `${3} / span ${titleColSpan}`,
-            gridRow: `${Math.ceil(rowNumber / 2)}/ span ${titleRowSpan}`
-          }}>
-          Brussels
-        </Title>
-
-        {stampNodes.map(d => (
+        {data.map(d => (
           <div
-            className={cxx.stamp}
             style={{
               gridColumn: `span ${photoColSpan}`,
               gridRow: `span ${photoRowSpan}`,
@@ -111,10 +59,10 @@ class Collage extends React.Component {
   }
 }
 
-Collage.defaultProps = {
+ScreenshotDiary.defaultProps = {
   width: 550,
   height: 330,
   center: [290, 200]
 };
 
-export default Collage;
+export default ScreenshotDiary;
