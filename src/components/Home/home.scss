@@ -12,15 +12,6 @@ $pad: 5px;
 
 
 
-a {
-  color: $black;
-
-  // text-decoration: underline;
-  font-style: italic;
-
-  // font-size: .9em;
-}
-
 .emoji {
   font-size: 22px;
 }
@@ -82,16 +73,17 @@ a {
   border-radius: 50px;
   display: block;
 }
+
 .header {
   display: flex;
 
   .branding {
     position: relative;
     flex: 1;
-    padding: 40px;
+    // padding: 40px;
     text-align: center;
-    color: $secBrown;
-    font-family: young;
+    // color: $secBrown;
+    // font-family: young;
   }
 
   .portrait {
@@ -108,4 +100,38 @@ a {
     // transform:rotate(4deg);
 
   }
+}
+
+// table,  td {
+//   border: 2px solid grey !important;
+//   padding: 4px;
+// }
+
+.centerTable {
+  margin: auto;
+  width: 100%;
+
+  // border: 3px solid #73AD21;
+  padding: 2px;
+}
+
+.myTable {
+  // @apply .border-2 .border-black;
+
+  // th {
+  //   @apply .flex;
+  // }
+
+  td, th {
+    @apply .border .border-black ;
+  }
+
+  td {
+    @apply .p-1;
+  }
+
+  th {
+    @apply .p-2 .text-xl .font-extrabold;
+  }
+
 }

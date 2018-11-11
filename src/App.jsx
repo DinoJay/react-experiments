@@ -5,14 +5,16 @@ import PropTypes from 'prop-types';
 // import $ from 'jquery';
 import cxx from './components/app.scss';
 
-import Home from './components/Home';
-import Collage from './components/Collage';
 // import Bookmarks from './Bookmarks';
 // import LongIslandGirls from './components/LongIslandGirls';
-import RecordCollection from './components/RecordCollection';
-import Projects from './components/Projects';
-import CV from './components/CV';
-import ScreenshotDiary from './components/ScreenshotDiary';
+import {
+  INDEX,
+  CV,
+  COLLAGE,
+  RECORDCOLLECTION,
+  PROJECTS,
+  SCREENSHOTS
+} from './routePaths';
 // import Nav from './components/Nav';
 // import cxx from './components/cxx/nav.scss';
 // import './global/annotation.scss';
@@ -26,18 +28,18 @@ const BIG_HEIGHT = 770;
 
 const selectElement = (path, pr) => {
   switch (path) {
-    case '/':
-      return <Home {...pr} />;
-    case '/CV':
-      return <CV {...pr} />;
-    case '/Collage':
-      return <Collage {...pr} />;
-    case '/RecordCollection':
-      return <RecordCollection {...pr} />;
-    case '/Projects':
-      return <Projects {...pr} />;
-    case '/ScreenshotDiary':
-      return <ScreenshotDiary {...pr} />;
+    case INDEX.path:
+      return <INDEX.Comp {...pr} />;
+    case CV.path:
+      return <CV.Comp {...pr} />;
+    case COLLAGE.path:
+      return <COLLAGE.Comp {...pr} />;
+    case RECORDCOLLECTION.path:
+      return <RECORDCOLLECTION.Comp {...pr} />;
+    case PROJECTS.path:
+      return <PROJECTS.Comp {...pr} />;
+    case SCREENSHOTS.path:
+      return <SCREENSHOTS.Comp {...pr} />;
     default:
       return <div>Unknown path</div>;
   }
@@ -59,43 +61,57 @@ const resize = win => {
   return {width, height, picDim};
 };
 
-const Nav = ({clickHandler}) => (
-  <div className={cxx.list}>
-    <ul>
-      <li>
-        <a onClick={clickHandler} href="/">
-          Home <small>(...is where I want to be)</small>
-        </a>
-      </li>
-      <li>
-        <a onClick={clickHandler} href="/CV">
-          CV <small>(my so called adult life)</small>
-        </a>
-      </li>
-      <li>
-        <a onClick={clickHandler} href="/Collage">
-          Collage <small>(friends and spaces)</small>
-        </a>
-      </li>
-      <li>
-        <a onClick={clickHandler} href="/RecordCollection">
-          Record Collection
-        </a>
-      </li>
-      <li>
-        <a onClick={clickHandler} href="/ScreenshotDiary">
-          Screenshot Diary{' '}
-          <small>(my unfinished ramblings when the day is over)</small>
-        </a>
-      </li>
-      <li className="hidden">
-        <a onClick={clickHandler} href="/Projects">
-          Blog <small>(projects, mixtapes and other stuff - unfinished)</small>
-        </a>
-      </li>
-    </ul>
-  </div>
-);
+const Nav = ({clickHandler, path, className}) => {
+  const pathString = p => (p.substring(1) === '' ? 'Home' : p.substring(1));
+  return (
+    <div className={className}>
+      <div className="mb-12 text-2xl">
+        <h3 className="">Jan Maushagen</h3>
+        <div className="text-xl">/ {pathString(path)}</div>
+      </div>
+      <div className={`${cxx.list} text-xl`}>
+        <ul>
+          <li>
+            <a onClick={clickHandler} className="" href={INDEX.path}>
+              Home <small className="hidden">(...is where I want to be)</small>
+            </a>
+          </li>
+          <li>
+            <a onClick={clickHandler} href={CV.path}>
+              CV <small className="hidden">(my so called adult life)</small>
+            </a>
+          </li>
+          <li>
+            <a onClick={clickHandler} href={COLLAGE.path}>
+              Collage <small className="hidden">(friends and spaces)</small>
+            </a>
+          </li>
+          <li>
+            <a onClick={clickHandler} href={RECORDCOLLECTION.path}>
+              Record Collection
+            </a>
+          </li>
+          <li>
+            <a onClick={clickHandler} href={SCREENSHOTS.path}>
+              Screenshot Diary{' '}
+              <small className="hidden">
+                (my unfinished ramblings when the day is over)
+              </small>
+            </a>
+          </li>
+          <li className="hidden">
+            <a onClick={clickHandler} href={PROJECTS.path}>
+              Blog{' '}
+              <small className="hidden">
+                (projects, mixtapes and other stuff - unfinished)
+              </small>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 class App extends React.Component {
   static propTypes = {
@@ -148,7 +164,6 @@ class App extends React.Component {
 
   render() {
     const {width, height, picDim, path, oldPath, back} = this.state;
-    const pathString = p => (p.substring(1) === '' ? 'Home' : p.substring(1));
 
     const pad = 20;
 
@@ -166,13 +181,12 @@ class App extends React.Component {
       <div
         className="container m-4 flex w-screen h-screen"
         style={{marginTop: `${marginTop}px`}}>
-        <div className={cxx.navCont}>
-          <div className={`${cxx.nav} border-3`}>
-            <div className={cxx.title}>
-              <span>Jan Maushagen</span>&nbsp;/&nbsp; <br /> {pathString(path)}
-            </div>
-            <Nav clickHandler={this.clickHandler} />
-          </div>
+        <div>
+          <Nav
+            className={`${cxx.nav} p-8 mr-10 font-mono `}
+            path={path}
+            clickHandler={this.clickHandler}
+          />
         </div>
         <div id={cxx.right} className={`${cxx.mainCont} flex flex-col`}>
           <div className={`${cxx.flipContainer} flex-grow flex flex-col`}>
@@ -190,7 +204,7 @@ class App extends React.Component {
                   height: `${height}px`,
                   zIndex: back ? -1 : null,
                 }}>
-                <div>{!back ? ActiveElement : PassiveElement}</div>
+                {!back ? ActiveElement : PassiveElement}
               </div>
               <div
                 className={`${cxx.back} flex flex-col overflow-visible`}

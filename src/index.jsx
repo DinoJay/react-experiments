@@ -26,6 +26,7 @@ import Routes from './Routes';
 
 import './styles/tailwind.css';
 import './styles/index.scss';
+import './styles/annotation.scss';
 // import CV from './components/CV';
 
 const WebFontConfig = {
@@ -34,7 +35,7 @@ const WebFontConfig = {
   //   urls: ['./styles/font.css']
   // },
   google: {
-    families: ['Frijole', 'Concert One', 'Slackey', 'Bowlby One SC']
+    families: ['Roboto', 'Frijole', 'Concert One', 'Slackey', 'Bowlby One SC']
   }
 };
 

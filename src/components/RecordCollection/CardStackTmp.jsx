@@ -7,29 +7,12 @@ import flatten from 'lodash/flatten';
 
 import TagCloud from '../Bookmarks/TagCloud';
 
-import Stack from './Stack/Stack';
+import {CardMini} from './Card';
 // import d3Sketchy from '../../lib/d3.sketchy';
 // import SketchyCircle from './SketchyCircle';
 
 import cxx from './CardStack.scss';
 
-import VinylIcon from './styles/disc-vinyl-icon.png';
-
-// import Modal from '../utils/Modal';
-const Record = ({title, tags, img, width, height, highlight, uri, ...rest}) => (
-  <div
-    {...rest}
-    style={{
-      zIndex: 2,
-      background: `url(${VinylIcon}) center center no-repeat`,
-      boxShadow:
-        '0 5px 2px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.3)'
-    }}>
-    <img src={img} alt="" width="100%" height="100%" />
-  </div>
-);
-
-// <a target="_blank" href={uri}>
 // function delay(milliseconds) {
 //   return function(result) {
 //     return new Promise(resolve => {
@@ -76,6 +59,7 @@ function makeTreemap({data, width, height, padX, padY}) {
 
 const drawPath = d3.line().curve(d3.curveStepAfter);
 
+
 function resetState({tags, firstItems, secItems}) {
   return {
     tags: tags.map(d => {
@@ -91,7 +75,7 @@ function resetState({tags, firstItems, secItems}) {
       d.highlighted = true;
       d.hovered = false;
       return d;
-    }),
+    })
   };
 }
 
@@ -122,7 +106,7 @@ const Frame = ({
   onMouseEnter,
   onMouseLeave,
   onMouseOut,
-  children,
+  children
 }) => (
   <div
     className="absolute"
@@ -134,7 +118,7 @@ const Frame = ({
       transition: `0.2s left, 0.2s background-position, 0.1s border-color, 0.2s opacity, 0.5s transform`,
       transform: hovered ? 'scale(1.2)' : null,
 
-      ...position,
+      ...position
     }}
     onMouseEnter={onMouseEnter}
     onMouseLeave={onMouseLeave}>
@@ -147,7 +131,7 @@ Frame.propTypes = {
   // hoverHandler: PropTypes.func.isRequired,
   children: PropTypes.element.isRequired,
   highlighted: PropTypes.bool,
-  hovered: PropTypes.bool,
+  hovered: PropTypes.bool
   // index: PropTypes.number.isRequired
 };
 
@@ -156,7 +140,7 @@ Frame.defaultProps = {
   position: null,
   pos: 0,
   highlighted: false,
-  children: <Record />,
+  children: <CardMini />
 };
 
 function layout({index = null, data, frameOffset, width}) {
@@ -179,7 +163,7 @@ function layout({index = null, data, frameOffset, width}) {
     .domain([index + 1, data.length - 1])
     .range([
       d3.min([scale(index) + frameOffset / 2, width - frameOffset / 2]),
-      width - frameOffset / 2,
+      width - frameOffset / 2
     ]);
 
   return data.map((c, i) => {
@@ -202,7 +186,7 @@ function init({data, frameOffset, width}) {
   const firstItems = layout({
     data: data.slice(0, data.length / 2),
     frameOffset,
-    width,
+    width
   }).map(d => {
     d.first = true;
     d.highlighted = true;
@@ -211,7 +195,7 @@ function init({data, frameOffset, width}) {
   const secItems = layout({
     data: data.slice(data.length / 2),
     frameOffset,
-    width,
+    width
   }).map(d => {
     d.first = false;
     d.highlighted = true;
@@ -220,13 +204,13 @@ function init({data, frameOffset, width}) {
   return {firstItems, secItems};
 }
 
-export default class MyRecordColl extends React.Component {
+class Stack extends React.Component {
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
     data: PropTypes.array.isRequired,
     frameOffset: PropTypes.number,
-    cardWidth: PropTypes.number,
+    cardWidth: PropTypes.number
   };
 
   static defaultProps = {
@@ -235,95 +219,23 @@ export default class MyRecordColl extends React.Component {
     cardWidth: 150,
     cardHeight: 150,
     frameOffset: 200,
-    offsetY: 20,
+    offsetY: 20
   };
 
-  state = {selectedIndex: null, mode: null};
-  // hoverHandler = focussedFrame => {
-  //   const {data, cardWidth, width} = this.props;
-  //   const {treemapData: oldTreemapData} = this.state;
-  //   const frameOffset = cardWidth * 2;
-  //
-  //   const highlight = d => {
-  //     d.highlighted = _.intersection(d.tags, focussedFrame.tags).length > 0;
-  //     return d;
-  //   };
-  //
-  //   if (focussedFrame === null) {
-  //     const treemapData = oldTreemapData.map(t => {
-  //       t.highlighted = false;
-  //       return t;
-  //     });
-  //     this.setState({...init({data, frameOffset, width}), treemapData});
-  //     return;
-  //   }
-  //   //
-  //   // const treemapData = oldTreemapData.map(t => {
-  //   //   t.highlighted = focussedFrame.tags.includes(t.data.key);
-  //   //   return t;
-  //   // });
-  //
-  //   const treemapData = oldTreemapData.map(t => {
-  //     t.highlighted = focussedFrame.tags.includes(t.data.key);
-  //     return t;
-  //   });
-  //
-  //   const selectedIndex = data.findIndex(d => d.uri === focussedFrame.uri);
-  //
-  //   // this.setState({selectedIndex, hovered: true, treemapData});
-  // };
-  // shouldComponentUpdate() {
-  //   return false;
-  // }
+  constructor(props) {
+    super(props);
 
-  // enterTag = key => {
-  //   if (key === null) this.setState(resetState);
-  //
-  //   const {tags, firstItems, secItems} = resetState(this.state);
-  //
-  //   const clonedTags = _.cloneDeep(tags).map(d => {
-  //     d.hover = d.key === key;
-  //     return d;
-  //   });
-  //   const highlight = d => {
-  //     d.highlighted = d.tags.includes(key);
-  //     return d;
-  //   };
-  //   const updFirstItems = firstItems.map(highlight);
-  //   const updSecItems = secItems.map(highlight);
-  //
-  //   this.setState({
-  //     tags: clonedTags,
-  //     firstItems: updFirstItems,
-  //     secItems: updSecItems,
-  //   });
-  // };
-
-  leaveTag = () => {
-    this.setState(resetState);
-  };
-
-  render() {
     const {
-      cardHeight,
-      cardWidth,
+      data: [],
       width,
       height,
+      cardWidth,
+      cardHeight,
       pad,
-      offsetY,
       data
-    } = this.props;
+    } = props;
 
-    const {selectedIndex, clicked} = this.state;
-    console.log('selectedIndex', selectedIndex);
-
-    const {firstItems, secItems} = init({
-      data,
-      frameOffset: 2 * cardWidth,
-      width,
-    });
-
-    const cloudHeight = height - 2 * cardHeight - 2 * pad;
+    this.labels = {};
 
     const tags = aggregateByTags(data).map(d => {
       // TODO: check;
@@ -336,76 +248,173 @@ export default class MyRecordColl extends React.Component {
       return d;
     });
 
-    const stackConf = {
-      centered: false,
-      duration: 400,
-      width,
-      unit: 'px',
-      height: 100,
-      slotSize: 150,
-    };
+    // console.log('tags', tags);
+    // const fontScale = d3
+    //   .scaleLinear()
+    //   .domain([1, d3.max(tags, d => d.values.length)])
+    //   .range([15, 25]);
 
+    const {firstItems, secItems} = init({
+      data,
+      frameOffset: 2 * cardWidth,
+      width
+    });
+    const cloudHeight = height - 2 * cardHeight - 2 * pad;
     const treemapData = makeTreemap({
       data: tags,
       width,
       height: cloudHeight,
       padX: 20,
-      padY: 20,
+      padY: 20
     });
 
-    const StackOne = (
-      <Stack
-        {...stackConf}
-        data={firstItems}
-        selectedIndex={selectedIndex}
-        centered={clicked}>
-        {(ch, i) => (
-          <Record
-            onMouseOver={() =>
-              selectedIndex !== i && this.setState({selectedIndex: i, clicked: false})
-            }
-            onMouseOut={() =>
-              selectedIndex !== i && this.setState({selectedIndex: null, clicked: false})
-            }
-            onClick={() => this.setState({selectedIndex: i, clicked: true})}
-            width={cardWidth}
-            height={cardHeight}
-            img={ch.thumb}
-            {...ch}
-          />
-        )}
-      </Stack>
-    );
+    this.state = {
+      firstItems,
+      secItems,
+      tags,
+      fontScale: d3.scaleLinear(),
+      focussedFrame: null,
+      treemapData,
+      cloudHeight
+    };
+  }
 
-    const StackTwo = (
-      <Stack
-        centered={false}
-        duration={400}
-        selectedIndex={selectedIndex}
-        unit="px"
-        width={width}
-        height={100}
-        slotSize={150}
-        data={secItems}>
-        {(ch, i) => (
-          <Record
-            width={cardWidth}
-            height={cardHeight}
-            img={ch.thumb}
-            {...ch}
-          />
-        )}
-      </Stack>
-    );
+  hoverHandler = focussedFrame => {
+    const {data, cardWidth, width} = this.props;
+    const {treemapData: oldTreemapData} = this.state;
+    const frameOffset = cardWidth * 2;
+
+    const highlight = d => {
+      d.highlighted = _.intersection(d.tags, focussedFrame.tags).length > 0;
+      return d;
+    };
+
+    if (focussedFrame === null) {
+      const treemapData = oldTreemapData.map(t => {
+        t.highlighted = false;
+        return t;
+      });
+      this.setState({...init({data, frameOffset, width}), treemapData});
+      return;
+    }
+    //
+    // const treemapData = oldTreemapData.map(t => {
+    //   t.highlighted = focussedFrame.tags.includes(t.data.key);
+    //   return t;
+    // });
+
+    const treemapData = oldTreemapData.map(t => {
+      t.highlighted = focussedFrame.tags.includes(t.data.key);
+      return t;
+    });
+
+    const index = data.findIndex(d => d.uri === focussedFrame.uri);
+    const dataUp = data.slice(0, data.length / 2);
+    const dataBottom = data.slice(data.length / 2);
+    console.log('index', index, focussedFrame.uri);
+
+    if (index < data.length / 2 - 1) {
+      // console.log('i up', index);
+      const firstItems = layout({
+        data: dataUp,
+        index: dataUp.findIndex(d => d.uri === focussedFrame.uri),
+        frameOffset,
+        width
+      }).map(highlight);
+      const secItems = this.state.secItems.map(highlight);
+      this.setState({firstItems, secItems, treemapData});
+    } else {
+      // console.log('i bottom', index);
+      const secItems = layout({
+        data: dataBottom,
+        index: dataBottom.findIndex(d => d.uri === focussedFrame.uri),
+        frameOffset,
+        width
+      }).map(highlight);
+      const firstItems = this.state.firstItems.map(highlight);
+      this.setState({firstItems, secItems, treemapData});
+    }
+  };
+  // shouldComponentUpdate() {
+  //   return false;
+  // }
+
+  enterTag = key => {
+    if (key === null) this.setState(resetState);
+
+    const {tags, firstItems, secItems} = resetState(this.state);
+
+    const clonedTags = _.cloneDeep(tags).map(d => {
+      d.hover = d.key === key;
+      return d;
+    });
+    const highlight = d => {
+      d.highlighted = d.tags.includes(key);
+      return d;
+    };
+    const updFirstItems = firstItems.map(highlight);
+    const updSecItems = secItems.map(highlight);
+
+    this.setState({
+      tags: clonedTags,
+      firstItems: updFirstItems,
+      secItems: updSecItems
+    });
+  };
+
+  leaveTag = () => {
+    this.setState(resetState);
+  };
+
+  render() {
+    const {cardHeight, cardWidth, width, height, pad, offsetY} = this.props;
+
+    const {tags, firstItems, links, secItems, treemapData} = this.state;
+
+    const StackOne = firstItems.map((ch, i) => (
+      <Frame
+        {...ch}
+        z={firstItems.length - i}
+        position={{left: ch.pos}}
+        onMouseEnter={() => {
+          this.hoverHandler(null);
+          this.hoverHandler(ch);
+        }}
+        onMouseLeave={() => this.hoverHandler(null)}>
+        <CardMini
+          width={cardWidth}
+          height={cardHeight}
+          img={ch.thumb}
+          {...ch}
+        />
+      </Frame>
+    ));
+
+    const StackTwo = secItems.map((ch, i) => (
+      <Frame
+        {...ch}
+        z={secItems.length - i}
+        position={{left: ch.pos}}
+        onMouseEnter={() => this.hoverHandler(ch)}
+        onMouseLeave={() => this.hoverHandler(null)}>
+        <CardMini
+          width={cardWidth}
+          height={cardHeight}
+          img={ch.thumb}
+          {...ch}
+        />
+      </Frame>
+    ));
 
     // const { width, height } = this.props;
     const stackDim = {height: cardHeight};
 
+    const cloudHeight = height - 2 * cardHeight - 2 * pad;
     const tagCloudStyle = {
       position: 'relative',
       height: `${cloudHeight}px`,
       marginBottom: `${pad}px`,
-      marginTop: `${pad}px`,
+      marginTop: `${pad}px`
     };
 
     const linksTop = flatten(
@@ -414,7 +423,7 @@ export default class MyRecordColl extends React.Component {
         const l = targets.map(t => ({
           order: c.first,
           source: c,
-          target: t,
+          target: t
         }));
         return l;
       }),
@@ -422,12 +431,12 @@ export default class MyRecordColl extends React.Component {
     const PathsTop = linksTop.map(d => {
       const source = {
         x: d.source.pos + cardWidth / 2,
-        y: cardHeight,
+        y: cardHeight
       };
       const cp = [source.x, source.y + offsetY];
       const target = [
         d.target.left + d.target.width / 2,
-        cardHeight + pad + d.target.top,
+        cardHeight + pad + d.target.top
       ];
       return (
         <path
@@ -436,28 +445,26 @@ export default class MyRecordColl extends React.Component {
         />
       );
     });
-
     const linksBottom = flatten(
       secItems.map(c => {
         const targets = treemapData.filter(t => c.tags.includes(t.data.key));
         const l = targets.map(t => ({
           order: c.first,
           source: c,
-          target: t,
+          target: t
         }));
         return l;
       }),
     );
-
     const PathsBottom = linksBottom.map(d => {
       const source = {
         x: d.source.pos + cardWidth / 2,
-        y: height - cardHeight,
+        y: height - cardHeight
       };
       const cp = [source.x, source.y - offsetY];
       const target = [
         d.target.left + d.target.width / 2,
-        cardHeight + pad + d.target.top + d.target.height,
+        cardHeight + pad + d.target.top + d.target.height
       ];
       return (
         <path
@@ -468,15 +475,16 @@ export default class MyRecordColl extends React.Component {
     });
 
     return (
-      <div className="relative">
+      <div style={{position: 'relative'}}>
         <svg
-          className="absolute"
           style={{
             pointerEvents: 'none',
+            position: 'absolute',
             width: `${width}px`,
             height: `${height}px`,
+            // zIndex: 300,
             left: 0,
-            top: 0,
+            top: 0
           }}>
           <defs />
           <g>{PathsTop}</g>
@@ -490,11 +498,11 @@ export default class MyRecordColl extends React.Component {
             height={cloudHeight}
             padX={0}
             padY={0}
-            onHover={d => console.log('yeah', d)}
+            onHover={this.enterTag}
           />
         </div>
         <div style={stackDim}>
-          <div className={`row ${cxx.stack}`}>{StackTwo}</div>
+          <ul className={`row ${cxx.stack}`}>{StackTwo}</ul>
         </div>
       </div>
     );
@@ -510,3 +518,28 @@ export default class MyRecordColl extends React.Component {
   //   {t.key}
   // </text>
 }
+
+Stack.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  cardWidth: PropTypes.number,
+  cardHeight: PropTypes.number,
+  secCluster: PropTypes.array,
+  frameOffset: PropTypes.number
+};
+
+Stack.defaultProps = {
+  firstCluster: [],
+  secCluster: [],
+  focussedFrame: null,
+  width: 800,
+  height: 600,
+  cardWidth: 150,
+  cardHeight: 150,
+  frameOffset: 200,
+  markerHeight: 6,
+  markerWidth: 0,
+  offsetY: 20
+};
+
+export default Stack;

@@ -77,7 +77,7 @@ class Collage extends React.Component {
           gridTemplateRows: `repeat( ${rowNumber}, 1fr)`,
         }}>
         <Title
-          className="z-10 bg-white border-4 border-black"
+          className="z-10 bg-white border-4 border-black text-black"
           style={{
             gridColumn: `${3} / span ${titleColSpan}`,
             gridRow: `${Math.ceil(rowNumber / 2)}/ span ${titleRowSpan}`

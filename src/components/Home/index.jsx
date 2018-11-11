@@ -7,7 +7,7 @@ import {timeFormat, timeParse, timeYear, timeMonth, timeDay} from 'd3';
 // import _ from 'lodash';
 import AboutVis from './AboutVis';
 import style from '../styles/postcard.scss';
-import cx from './index.scss';
+import cx from './home.scss';
 
 import beerIcon from './pics/beer-icon.png';
 import coffeeIcon from './pics/take-away.svg';
@@ -28,10 +28,24 @@ const todayDate = new Date();
 const thisYearBdate = parseTime(`26/04/${new Date().getFullYear()}`);
 const BelgiumArrivalDate = parseTime('22/09/2013');
 
+const SocialMedia = () => (
+  <ul className={style.socialMedia}>
+    <li>
+      <a href="">Email</a>
+    </li>
+    <li>
+      <a href="">Facebook</a>
+    </li>
+    <li>
+      <a href="">Twitter</a>
+    </li>
+  </ul>
+);
+
 class Dimensions extends React.Component {
   static propTypes = {
     children: PropTypes.node,
-    className: PropTypes.string,
+    className: PropTypes.string
   };
 
   state = {width: 0, height: 0};
@@ -56,7 +70,7 @@ class Dimensions extends React.Component {
 class Tooltip extends Component {
   static propTypes = {
     children: PropTypes.node,
-    style: PropTypes.object,
+    style: PropTypes.object
   };
 
   state = {textWidth: 0, textHeight: 0};
@@ -82,7 +96,7 @@ class Tooltip extends Component {
           position: 'absolute',
           // border: 'black solid 1px',
           width,
-          height,
+          height
         }}>
         <div
           ref={text => (this.text = text)}
@@ -96,7 +110,7 @@ class Tooltip extends Component {
               width: w0,
               height: w0,
               position: 'absolute',
-              top: (-w0 * 3) / 4,
+              top: (-w0 * 3) / 4
             }}
           />
           <div
@@ -106,7 +120,7 @@ class Tooltip extends Component {
               height: w1,
               position: 'absolute',
               left: w0,
-              top: -w1 / 2,
+              top: -w1 / 2
             }}
           />
           <div
@@ -116,7 +130,7 @@ class Tooltip extends Component {
               height: w2,
               position: 'absolute',
               left: w0 + w1,
-              top: 0,
+              top: 0
             }}
           />
         </div>
@@ -127,47 +141,42 @@ class Tooltip extends Component {
 
 const SomethingAboutMe = ({className}) => (
   <div className={className}>
-    <div id={style.message} className={className}>
-      <h3>Something about me</h3>
-      <p>
-        PhD student, orginally from Germany, (
-        {timeYear.count(birthdate, timeYear.offset(todayDate, -1))} years{
-          ' and '
-        }
-        {timeMonth.count(timeYear.offset(thisYearBdate, -1), todayDate)} in
-        Belgium for almost {timeYear.count(BelgiumArrivalDate, todayDate)} years
-        now. Getting my head around research, programming and languages.
-        Drinking cappucino in the morning, jogging and doing Diss-co music in
-        the evening. As part of my day job I work on data visualization and
-        educational games!
-      </p>
-    </div>
+    <h3 className="mb-2">Something about me</h3>
+    <p className="text-lg">
+      PhD student, orginally from Germany, (
+      {timeYear.count(birthdate, timeYear.offset(todayDate, -1))} years{' and '}
+      {timeMonth.count(timeYear.offset(thisYearBdate, -1), todayDate)} in
+      Belgium for almost {timeYear.count(BelgiumArrivalDate, todayDate)} years
+      now. Getting my head around research, programming and languages. Drinking
+      cappucino in the morning, jogging and doing Diss-co music in the evening.
+      As part of my day job I work on data visualization and educational games!
+    </p>
   </div>
 );
 
-const Table = () => (
-  <table className={style.centerTable}>
-    <tr>
-      <th>
-        Day{' '}
-        <span role="img" aria-label="emoji" className={cx.emoji}>
-          🌇
-        </span>
-      </th>
-      <th>
-        Night*{' '}
-        <span role="img" aria-label="emoji" className={cx.emoji}>
-          🌃
-        </span>
-      </th>
-    </tr>
-
+const MyTable = ({className}) =>
+  {
+    return <table className={className}>
+      <tr>
+        <th className="flex">
+          <div>__Day__ </div>
+          <span role="img" aria-label="emoji" className={cx.emoji}>
+            🌇
+          </span>
+        </th>
+    <th>
+      **Night**{' '}
+    <span role="img" aria-label="emoji" className={cx.emoji}>
+      🌃
+    </span>
+  </th>
+</tr>
     <tr>
       <td>
-        Gazing at{' '}
-        <span role="img" aria-label="emoji" className={cx.emoji}>
+        <div>Gazing at </div>
+        <div role="img" aria-label="emoji" className={cx.emoji}>
           💻
-        </span>
+        </div>
       </td>
       <td>
         <span role="img" aria-label="emoji" className={cx.emoji}>
@@ -179,110 +188,100 @@ const Table = () => (
     <tr>
       <td>
         Visualizing data{' '}
-        <span role="img" aria-label="emoji" className={cx.emoji}>
-          📊
-        </span>
-      </td>
-      <td>
-        <img
-          alt="headphones"
-          style={{width: '33px', height: '33px'}}
-          src={headphonesIcon}
-        />{' '}
-        <img
-          alt="mixing"
-          style={{width: '33px', height: '33px'}}
-          src={vinylIcon}
-        />{' '}
-        music{' '}
-        <span role="img" aria-label="emoji" className={cx.emoji}>
-          😎
-        </span>
-      </td>
-    </tr>
+    <span role="img" aria-label="emoji" className={cx.emoji}>
+      📊
+    </span>
+  </td>
+    <td>
+      <img
+        alt="headphones"
+        style={{width: '33px', height: '33px'}}
+        src={headphonesIcon}
+      />{' '}
+    <img
+      alt="mixing"
+      style={{width: '33px', height: '33px'}}
+      src={vinylIcon}
+    />{' '}
+    music{' '}
+    <span role="img" aria-label="emoji" className={cx.emoji}>
+      😎
+    </span>
+  </td>
+</tr>
     <tr>
       <td>
         getting lost in hyperspace{' '}
-        <img
-          style={{width: '33px', height: '33px'}}
-          alt="astro"
-          src={astroIcon}
-        />
-      </td>
-      <td>scratching my head about real life </td>
+    <img
+      style={{width: '33px', height: '33px'}}
+      alt="astro"
+      src={astroIcon}
+    />
+  </td>
+  <td>scratching my head about real life </td>
     </tr>
     <tr>
       <td>
         fiddling with{' '}
-        <img
-          alt="js"
-          src={jsLogo}
-          style={{
-            width: '22px',
-            height: '22px',
-            verticalAlign: 'top'
-          }}
-        />
-        {' ,'}
-        <img
-          alt="react"
-          src={reactLogo}
-          style={{
-            width: '22px',
-            height: '22px',
-            verticalAlign: 'top'
-          }}
-        />{' '}
-        and{' '}
-        <img
-          src={d3Logo}
-          alt="d3"
-          style={{
-            width: '22px',
-            height: '22px',
-            verticalAlign: 'top',
-          }}
-        />
-      </td>
-      <td>learning French and Dutch, forgetting German</td>
-    </tr>
-    <tr>
-      <td>
-        <img
-          style={{width: '33px', height: '33px'}}
-          alt="coffee"
-          src={coffeeIcon}
-        />{' '}
-        Bonjour
-      </td>
-      <td>
-        <img
-          style={{width: '33px', height: '33px'}}
-          alt="beer"
-          src={beerIcon}
-        />{' '}
-        Prost!
-      </td>
-    </tr>
-  </table>
-); // import d3sketchy from '../lib/d3.sketchy';
+    <img
+      alt="js"
+      src={jsLogo}
+      style={{
+        width: '22px',
+          height: '22px',
+          verticalAlign: 'top',
+      }}
+    />
+    {' ,'}
+    <img
+      alt="react"
+      src={reactLogo}
+      style={{
+        width: '22px',
+          height: '22px',
+          verticalAlign: 'top',
+      }}
+    />{' '}
+    and{' '}
+    <img
+      src={d3Logo}
+      alt="d3"
+      style={{
+        width: '22px',
+        height: '22px',
+        verticalAlign: 'top'
+      }}
+    />
+  </td>
+  <td>learning French and Dutch, forgetting German</td>
+</tr>
+<tr>
+  <td>
+    <img
+      style={{width: '33px', height: '33px'}}
+    alt="coffee"
+    src={coffeeIcon}
+  />{' '}
+  Bonjour
+</td>
+<td>
+  <img
+    style={{width: '33px', height: '33px'}}
+    alt="beer"
+    src={beerIcon}
+  />{' '}
+  Prost!
+</td>
+      </tr>
+    </table>
+  }
 const Home = ({width, height, picDim}) => (
-  <div>
+  <div className="flex-grow flex flex-col">
     <div className={cx.header}>
-      <div className={cx.branding}>
-        <h2>Vrije Universiteit Brussel</h2>
-        <h1>Jan Maushagen</h1>
-        <ul className={style.socialMedia}>
-          <li>
-            <a href="">Email</a>
-          </li>
-          <li>
-            <a href="">Facebook</a>
-          </li>
-          <li>
-            <a href="">Twitter</a>
-          </li>
-        </ul>
+      <div className={`${cx.branding} font-mono p-10`}>
+        <h3>Vrije Universiteit Brussel</h3>
+        <h1 className="text-4xl">Jan Maushagen</h1>
+        <SocialMedia />
       </div>
       <div className={cx.portrait}>
         <Tooltip
@@ -300,23 +299,14 @@ const Home = ({width, height, picDim}) => (
         </div>
       </div>
     </div>
-
-    <div id={style.border} />
-    <div id={style.content}>
-      <div className="flex">
-        <div>
-          <SomethingAboutMe className="mb-5" />
-          <Table className="" />
-        </div>
-        <div
-          className="flex-grow"
-          id={style.interests}
-          style={{flex: '0 0 50%'}}>
-            <h3>Interests</h3>
-            <Dimensions>
-              {(w, h) => <AboutVis width={w} height={h} />}
-            </Dimensions>
-        </div>
+    <div className="flex flex-grow">
+      <div>
+        <SomethingAboutMe className="text-base mb-5" />
+        <MyTable className={`text-lg ${cx.myTable}`} />
+      </div>
+      <div className="flex-grow" id={style.interests} style={{flex: '0 0 50%'}}>
+        <h3>Interests</h3>
+        <Dimensions>{(w, h) => <AboutVis width={w} height={h} />}</Dimensions>
       </div>
     </div>
   </div>

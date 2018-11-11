@@ -16,6 +16,7 @@ import {bboxCollide} from 'd3-bboxCollide';
 import {forceExtent} from '../utils/helper';
 
 import cxx from './AboutVis.scss';
+// import annoCx from './annotation.scss';
 
 function outerRadiusPath(d, pad = 3) {
   // Total difference in x and y from source to target
@@ -37,16 +38,13 @@ function outerRadiusPath(d, pad = 3) {
 const AboutVis = class AboutVis extends React.Component {
   static propTypes() {
     return {
-      width: React.PropTypes.number.isRequired,
-      height: React.PropTypes.number.isRequired,
-      data: React.PropTypes.array.isRequired
+      width: PropTypes.number.isRequired,
+      height: PropTypes.number.isRequired,
+      data: PropTypes.array.isRequired
     };
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {annoData: [], nodeData: [], links: []};
-  }
+  state = {annoData: [], nodeData: [], links: []};
 
   computeLayout = () => {
     const {width, height, data} = this.props; // this.props;
@@ -113,15 +111,16 @@ const AboutVis = class AboutVis extends React.Component {
 
     annoData.forEach(d => {
       d.tx = d.src.tx + 0;
-      d.ty = d.src.ty + (d.src.name === 'Personal Data' ? 0 : 100);
+      d.ty = d.src.ty + (d.src.name === 'Personal Data' ? -100 : 100);
       d.x = d.tx; // width / 2;
       d.y = d.ty; // height / 2;
     });
 
-    const pad = 10;
+    const padY = 20;
+    const padX = 40;
     const getBBox = d => [
-      [-d.width / 2 - pad, -d.height / 2 - pad],
-      [d.width / 2 + pad / 2, d.height / 2 + pad / 2]
+      [-d.width / 2 - padX, -d.height / 2 - padY],
+      [d.width / 2 + padX / 2, d.height / 2 + padY / 2]
     ];
 
     d3.forceSimulation(nodeData.concat(annoData))
@@ -132,8 +131,8 @@ const AboutVis = class AboutVis extends React.Component {
         forceExtent()
           .extent([[-40, 0], [width, height]])
           .bbox(d => [
-            [-d.width / 2 - pad, -d.height / 2 - pad],
-            [d.width / 2 + pad / 2, d.height / 2 + pad / 2]
+            [-d.width / 2 - padX, -d.height / 2 - padY],
+            [d.width / 2 + padX / 2, d.height / 2 + padY / 2]
           ]),
         // .strength(() => 0.7)
       )
@@ -146,27 +145,7 @@ const AboutVis = class AboutVis extends React.Component {
         'X',
         d3.forceX(d => d.tx || 0).strength(d => (d.type === 'node' ? 1 : 0.3)),
       )
-      // .force('center', d3.forceCenter(width / 2, height / 2))
       .on('tick', () => {
-        // Circle.attr('transform', d => `translate(${d.x}, ${d.y})`);
-        //
-        // makeAnnotations.annotations().forEach((d, i) => {
-        //   d.position = nodeData[i];
-        // });
-        //
-        // makeAnnotations.annotations().forEach((d, i) => {
-        //   const matchNode = nodeData.find(e => e.id === d.data.src);
-        //   const matchAnno = annoData.find(e => e.id === d.id);
-        //   d.dx = matchAnno.x - matchNode.x;
-        //   d.dy = matchAnno.y - matchNode.y;
-        //   d.width = 20;
-        //   d.height = 20;
-        // });
-
-        // Link.attr('d', outerRadiusPath);
-
-        // makeAnnotations.update();
-        //
         this.setState({annoData, nodeData, links});
       });
   };
@@ -178,7 +157,7 @@ const AboutVis = class AboutVis extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.props.height !== prevProps.height) {
-    this.computeLayout();
+      this.computeLayout();
     }
   }
 
@@ -196,7 +175,10 @@ const AboutVis = class AboutVis extends React.Component {
           {nodeData.map(d => (
             <g transform={`translate(${d.x},${d.y})`}>
               <circle r={d.r} fill="none" stroke="grey" />
-              <text className={cxx.label} textAnchor="middle" dy=".20em">
+              <text
+                className="font-bold text-svg text-lg"
+                textAnchor="middle"
+                dy=".20em">
                 {d.name}
               </text>
             </g>

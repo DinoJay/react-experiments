@@ -2,6 +2,8 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
+const tailwindcss = require('tailwindcss');
+
 const loaders = require('./webpack.loaders');
 
 const alias = require('./alias');
@@ -69,5 +71,6 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'),
     }),
+    require('autoprefixer'),
   ],
 };

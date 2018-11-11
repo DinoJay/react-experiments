@@ -1,12 +1,15 @@
-@import "../variables.scss";
-@import "./index.scss";
+@import "tailwind.css";
 
 :root {
-  --annotation-color: $primBrown;
+  --annotation-color: #666;
+}
+
+.text-svg {
+  fill: config('colors.black');
 }
 
 .annotation path {
-  stroke: $primBrown;
+  stroke: #666;
   fill: none;
 }
 
@@ -14,8 +17,9 @@
 .annotation .annotation-connector .connector-dot,
 .annotation path.connector-arrow,
 .annotation.callout.rect path.subject {
-  fill: $primBrown;
+  // fill: $#666;
   font-size: .90em;
+  // @apply .text-base;
 
   // @extend .serif;
 }
@@ -27,18 +31,51 @@
   .annotation.callout.rect path.subject {
     font-size: 1em;
 
-    // @extend .serif;
   }
 }
 
 
 .annotation-note-title {
+  text-decoration: underline;
   font-weight: bold;
+
+}
+
+.annotation-note {
+  border: 2px solid black;
+
+}
+.annotation-note-label {
+  // fill: black;
+  // font-weight: bold;
+}
+
+// .text-svg {
+//  fill: config('colors.black');
+// }
+
+.annotation-note-content {
+  // fill: black;
+  // font-weight: bold;
+  // @apply .text-svg;
+
+}
+
+// .text-svg {
+//   fill: config('colors.black');
+// }
+
+.annotation-note-content {
+  // fill: black;
+  // font-weight: bold;
+  @apply .text-svg;
 }
 
 .annotation-note-bg {
   fill: white;
   fill-opacity: 0.7;
+  // stroke: config('colors.black');
+  // stroke-width: 2px;
 }
 
 annotation.callout.rect path.subject {
@@ -46,7 +83,7 @@ annotation.callout.rect path.subject {
 }
 
 .annotation.badge path.subject-pointer, .annotation.badge path.subject {
-  fill: $primBrown;
+  fill: #666;
   stroke-width: 3px;
   stroke-linecap: round;
 }
@@ -68,7 +105,7 @@ annotation.callout.rect path.subject {
 
 circle.handle {
   stroke-dasharray: 5;
-  stroke: $primBrown;
+  stroke: #666;
   fill: rgba(255, 255, 255, 0.2);
   cursor: move;
   stroke-opacity: .4;

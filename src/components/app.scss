@@ -1,5 +1,17 @@
 @import "../styles/variables.scss";
 
+
+//TODO
+a {
+  @apply .text-black;
+  // color: $black;
+
+  // text-decoration: underline;
+  font-style: italic;
+
+  // font-size: .9em;
+}
+
 .tornBorder {
   // background: $primWhite;
   // border-style: solid;
@@ -44,7 +56,7 @@
   background: $primWhite;
   box-shadow: 0 5px 5px hsla(0, 0%, 0%, 0.3), inset 0 0 5px hsla(0, 0%, 0%, 0.3);
   padding: 20px 20px 20px 20px;
-  color: $black;
+  // color: $black;
 
   // text-decoration: underline;
   // font-style: italic;
@@ -65,17 +77,18 @@
 // ----------------------- NAV ---------------------------
 .nav {
   transform: rotate(2deg);
-  width: 90%;
+  // width: 90%;
 
   // font-family: 'Open Sans';
   background: $primWhite;
-  padding: 25px;
-  font-size: 18px;
+  // padding: 25px;
+  // margin-right: 25px;
+  // font-size: 18px;
   box-shadow: 0 5px 5px hsla(0, 0%, 0%, 0.3), inset 0 0 5px hsla(0, 0%, 0%, 0.3);
 
   a {
     text-decoration: none;
-    color: black;
+    // color: $black;
   }
 
   a:hover {
@@ -88,7 +101,7 @@
 
 
 .title {
-  height: 61px;
+  // height: 61px;
   margin-bottom: 20px;
 }
 
@@ -268,18 +281,6 @@ bg: http://dl.dropbox.com/u/5144828/webtreats-paper-pattern-2-brown-5.jpg
 //   stroke:#000;
 // }
 
-table, th, td {
-  border: 2px solid grey !important;
-  padding: 4px;
-}
-
-.centerTable {
-  margin: auto;
-  width: 100%;
-
-  // border: 3px solid #73AD21;
-  padding: 2px;
-}
 
 .passiveElement {
   z-index: -100;

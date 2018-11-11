@@ -1,5 +1,7 @@
 const path = require('path');
 
+const alias = require('./alias');
+
 module.exports = [
   {
     test: /\.scss$/,

@@ -5,6 +5,19 @@ $other-brown: #8e8264;
 $primary-white: white linear-gradient(to bottom right, white, #f0f0f0);
 $black: #666666;
 
+// @import "./annotation.scss"
+
+// .text-svg {
+//  fill: config('colors.black');
+// }
+//
+// .annotation-note-content {
+//   // fill: black;
+//   // font-weight: bold;
+//   @apply .text-svg .text-base;
+//
+// }
+
 svg {
   overflow: visible !important;
 }
@@ -15,6 +28,21 @@ svg {
   }
 }
 
+h3 {
+  @apply .font-mono;
+}
+
+.text-base {
+  @apply .text-black;
+}
+
+// * {
+//   @apply
+// }
+
+div {
+  @apply .text-black;
+}
 
 
 // @font-face {
@@ -52,51 +80,51 @@ body {
   background: #b17c51 url(./bg.jpg);
 }
 
-p {
-  font-family: "Meddon";
-  color: $primary-brown;
-}
+// p {
+//   font-family: "Meddon";
+//   color: $primary-brown;
+// }
 
 // div {
 //   font-family: "Meddon";
 //   color: $primary-brown;
 // }
 
-h1 {
-  font-size: 2.5em;
-  text-transform: uppercase;
-  font-weight: lighter;
-  letter-spacing: .15em;
-  font-family: "sliced juice";
-  color: grey;
-}
-
-h2 {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: .9em;
-  text-align: center;
-  text-transform: uppercase;
-  padding-bottom: 10px;
-  word-spacing: 5px;
-  letter-spacing: .1em;
-}
-
-h3 {
-  font-size: 1.2em;
-  font-style: italic;
-  text-align: center;
-  color: #8E8264;
-}
-
-h4 {
-  font-family: Arial, Helvetica, sans-serif;
-  text-transform: uppercase;
-  font-size: .8em;
-  color: $black;
-  letter-spacing: .1em;
-
-  // padding-left: 20px;
-}
+// h1 {
+//   font-size: 2.5em;
+//   text-transform: uppercase;
+//   font-weight: lighter;
+//   letter-spacing: .15em;
+//   font-family: "sliced juice";
+//   color: grey;
+// }
+//
+// h2 {
+//   font-family: Arial, Helvetica, sans-serif;
+//   font-size: .9em;
+//   text-align: center;
+//   text-transform: uppercase;
+//   padding-bottom: 10px;
+//   word-spacing: 5px;
+//   letter-spacing: .1em;
+// }
+//
+// h3 {
+//   font-size: 1.2em;
+//   font-style: italic;
+//   text-align: center;
+//   color: #8E8264;
+// }
+//
+// h4 {
+//   font-family: Arial, Helvetica, sans-serif;
+//   text-transform: uppercase;
+//   font-size: .8em;
+//   color: $black;
+//   letter-spacing: .1em;
+//
+//   // padding-left: 20px;
+// }
 
 ul {
   list-style: none;
@@ -106,9 +134,9 @@ ol {
   margin-left: 40px;
 }
 
-p {
-  margin-bottom: 20px;
-}
+// p {
+//   margin-bottom: 20px;
+// }
 
 hr {
   width: 100%;
