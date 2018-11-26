@@ -26,6 +26,7 @@
     "d3-force-surface": "^0.5.6",
     "d3-hexbin": "^0.2.2",
     "d3-radial": "^0.0.2",
+    "fitty": "^2.2.6",
     "jquery": "^3.3.1",
     "json-prune": "^1.1.0",
     "labella": "^1.1.4",
@@ -38,6 +39,7 @@
     "react-hot-loader": "^4.3.11",
     "react-router-dom": "^4.3.1",
     "sass-loader": "^7.1.0",
+    "textfit": "^2.3.1",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {

@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import getData from './discogsData';
 
 // import $ from 'jquery';
-import CardStack from './CardStack';
+import RecordCollection from './CardStack';
 import DotDotDot from '../utils/DotDotDot';
 // import getData from './discogsData';
 // import dummyData from './dummyData';
@@ -34,33 +34,6 @@ defaultData.forEach((d, i) => {
 //     }, ms)
 //   );
 
-class RecordCollection extends React.Component {
-  static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired
-  };
-
-  state = {loadingText: 'loading image data', data: []};
-
-  // componentDidMount() {
-  // this.setState({data: defaultData})
-  // }
-
-  // componentWillReceiveProps() {
-  //   this.setState(setInitialState(collectionData));
-  // }
-
-  render() {
-    const {height} = this.props;
-
-    // return null;
-    return <CardStack {...this.props} pad={40} data={defaultData} />;
-  }
-}
-
-RecordCollection.defaultProps = {
-  width: 860,
-  height: 640
-};
-
-export default RecordCollection;
+export default props => (
+  <RecordCollection {...props} pad={30} data={defaultData} />
+);

@@ -6,19 +6,40 @@ import {HashRouter, Switch, Route} from 'react-router-dom';
 
 import App from './App';
 
+import {
+  INDEX,
+  CV,
+  COLLAGE,
+  RECORDCOLLECTION,
+  PROJECTS,
+  SCREENSHOTS
+} from './routePaths';
+
 const Routes = () => (
   <HashRouter>
     <Switch>
-      <Route exact path="/" render={() => <App path="/" />} />
-      <Route exact path="/CV" render={() => <App path="/CV" />} />
-      <Route exact path="/Collage" render={() => <App path="/Collage" />} />
+      <Route exact path={INDEX.path} render={() => <App path={INDEX.path} />} />
+      <Route exact path={CV.path} render={() => <App path={CV.path} />} />
       <Route
         exact
-        path="/RecordCollection"
-        render={() => <App path="/RecordCollection" />}
+        path={COLLAGE.path}
+        render={() => <App path={COLLAGE.path} />}
       />
-      <Route exact path="/Bookmarks" render={() => <App path="/Bookmarks" />} />
-      <Route exact path="/Projects" render={() => <App path="/Projects" />} />
+      <Route
+        exact
+        path={COLLAGE.path}
+        render={() => <App path={COLLAGE.path} />}
+      />
+      <Route
+        exact
+        path={PROJECTS.path}
+        render={() => <App path={PROJECTS.path} />}
+      />
+      <Route
+        exact
+        path={RECORDCOLLECTION.path}
+        render={() => <App path={RECORDCOLLECTION.path} />}
+      />
     </Switch>
   </HashRouter>
 );

@@ -7,6 +7,7 @@ import _ from 'lodash';
 import ReactDom from 'react-dom';
 // import sketchy from '../utils/d3.sketchy';
 
+import fitty from 'fitty';
 import cxx from './TagCloud.scss';
 
 // const setChildrenToInheritFontSize = el => {
@@ -50,7 +51,7 @@ class Tag extends React.Component {
     width: PropTypes.array.isRequired,
     height: PropTypes.number.isRequired,
     left: PropTypes.number.isRequired,
-    highlighted: PropTypes.bool.isRequired,
+    selected: PropTypes.bool.isRequired,
     top: PropTypes.number.isRequired,
     padding: PropTypes.number.isRequired
   };
@@ -63,14 +64,28 @@ class Tag extends React.Component {
     children: 0,
     color: 'blue',
     fill: 'white',
-    padding: 2,
+    padding: 10,
     clickHandler: () => null
   };
 
   componentDidMount() {
-    const node = ReactDom.findDOMNode(this.node);
-    const { width, height, padding } = this.props;
-    autoSizeText(node, 100, width - 2 * padding, height - 2 * padding);
+    const {width, height, padding} = this.props;
+
+    // fitty(this.node);
+    autoSizeText(this.node, 100, width - padding, height - padding);
+    // autoSizeText(node, 10, width - 2 * 10, height - 2 * 10);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // const {width, height, padding} = this.props;
+    // autoSizeText(this.node, 100, width - padding, height - padding);
+    // fitty(this.node, {maxSize: 80});
+    // fitty(this.node, {maxSize: 80});
+    // const node = ReactDom.findDOMNode(this.node);
+    // const {width, height, padding} = this.props;
+    // if (prevProps.width !== width || prevProps.height !== height) {
+    //   autoSizeText(node, 100, width - 2 * padding, height - 2 * padding);
+    // }
   }
 
   render() {
@@ -85,37 +100,34 @@ class Tag extends React.Component {
       onMouseEnter,
       onMouseLeave,
       padding,
-      highlighted
+      selected
     } = this.props;
-
 
     const st = {
       left,
       top,
-      width: `${width}px`,
-      height: `${height}px`
-      // transition: 'width 1s height 2s'
-      // padding: 10
-      // border: 'black groove',
-      // borderRadius: '10%',
+      width,
+      height,
+      transition: 'all 400ms',
+      // wordBreak: 'break-all'
     };
+
     return (
       <div
-        className={cxx.tag}
+        className={`${cxx.tag} ${
+          selected ? 'bg-brown' : 'bg-white'
+        } flex flex-col items-center justify-center text-xl `}
         style={st}
         onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
+        onMouseLeave={onMouseLeave}>
         <div
-          className={highlighted ? cxx.textHighlighted : cxx.text}
-          style={{ padding }}
-        >
-          <div
-            ref={node => (this.node = node)}
-            style={{ lineHeight: `${height - padding * 4}px` }}
-          >
-            {data.key}
-          </div>
+          className="m-2"
+          ref={el => (this.node = el)}
+          style={{
+            display: 'inline-block',
+            whiteSpace: 'nowrap',
+          }}>
+          {data.key}
         </div>
       </div>
     );
@@ -133,18 +145,19 @@ class TagCloud extends React.Component {
   };
 
   render() {
-    const { color, data, onHover } = this.props;
+    const {color, data, onHover} = this.props;
 
     const treemap = data.map((d, i) => (
       <Tag
         {...d}
         color={color(d.data.key)}
+        padding={10}
         index={i}
         onMouseEnter={() => onHover(d.data.key)}
         onMouseLeave={() => onHover(null)}
       />
     ));
-    return <div className="child-borders ">{treemap}</div>;
+    return <div className="child-borders">{treemap}</div>;
   }
 }
 

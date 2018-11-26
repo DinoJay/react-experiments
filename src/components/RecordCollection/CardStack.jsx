@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 // import ReactDOM from 'react-dom';
 import * as d3 from 'd3';
 import flatten from 'lodash/flatten';
+import intersection from 'lodash/intersection';
 // import $ from 'jquery';
 
 import TagCloud from '../Bookmarks/TagCloud';
@@ -15,17 +16,34 @@ import cxx from './CardStack.scss';
 
 import VinylIcon from './styles/disc-vinyl-icon.png';
 
+const isSubset = (t0, t1) => {
+  const ret = intersection(t0, t1).length > 0;
+  return ret;
+};
+
 // import Modal from '../utils/Modal';
-const Record = ({title, tags, img, width, height, highlight, uri, ...rest}) => (
+const Record = ({
+  title,
+  tags,
+  img,
+  width,
+  height,
+  highlight,
+  uri,
+  style,
+  ...rest
+}) => (
   <div
     {...rest}
     style={{
       zIndex: 2,
+      height: 140,
       background: `url(${VinylIcon}) center center no-repeat`,
       boxShadow:
-        '0 5px 2px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.3)'
+        '0 5px 2px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.3)',
+      ...style
     }}>
-    <img src={img} alt="" width="100%" height="100%" />
+    <img src={img} alt="" style={{objectFit: 'cover', height: '100%'}} />
   </div>
 );
 
@@ -44,21 +62,21 @@ const Record = ({title, tags, img, width, height, highlight, uri, ...rest}) => (
 
 function makeTreemap({data, width, height, padX, padY}) {
   const ratio = 4;
-  const sorted = data.sort((a, b) => b.count - a.count);
+  const sorted = data.sort((a, b) => b.weight - a.weight);
   const treemap = d3
     .treemap()
     .size([width / ratio, height])
     .paddingInner(0)
     .round(true)
-    .tile(d3.treemapSquarify.ratio(1));
+    .tile(d3.treemapResquarify.ratio(1));
 
   const size = d3
     .scaleLinear()
-    .domain(d3.extent(data, d => d.count))
-    .range([20, 50]);
+    .domain(d3.extent(data, d => d.weight))
+    .range([30, 100]);
 
   const first = {name: 'root', children: sorted};
-  const root = d3.hierarchy(first).sum(d => size(d.count));
+  const root = d3.hierarchy(first).sum(d => size(d.weight));
   treemap(root);
   if (!root.children) return [];
   root.children.forEach(d => {
@@ -108,56 +126,8 @@ function aggregateByTags(data) {
   return d3
     .nest()
     .key(d => d.key)
-    .entries(spreadData)
-    .map(d => {
-      d.count = d.values.length;
-      return d;
-    });
+    .entries(spreadData);
 }
-
-const Frame = ({
-  highlighted,
-  hovered,
-  position,
-  onMouseEnter,
-  onMouseLeave,
-  onMouseOut,
-  children,
-}) => (
-  <div
-    className="absolute"
-    style={{
-      opacity: highlighted ? 1 : 0.1,
-      pointerEvents: 'auto',
-      position: 'absolute',
-      zIndex: hovered ? 1000 : null,
-      transition: `0.2s left, 0.2s background-position, 0.1s border-color, 0.2s opacity, 0.5s transform`,
-      transform: hovered ? 'scale(1.2)' : null,
-
-      ...position,
-    }}
-    onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}>
-    {children}
-  </div>
-);
-
-Frame.propTypes = {
-  position: PropTypes.string,
-  // hoverHandler: PropTypes.func.isRequired,
-  children: PropTypes.element.isRequired,
-  highlighted: PropTypes.bool,
-  hovered: PropTypes.bool,
-  // index: PropTypes.number.isRequired
-};
-
-Frame.defaultProps = {
-  hovered: false,
-  position: null,
-  pos: 0,
-  highlighted: false,
-  children: <Record />,
-};
 
 function layout({index = null, data, frameOffset, width}) {
   const scale = d3
@@ -198,9 +168,10 @@ function layout({index = null, data, frameOffset, width}) {
   });
 }
 
-function init({data, frameOffset, width}) {
+function init({data, selectedIndex, frameOffset, width}) {
   const firstItems = layout({
     data: data.slice(0, data.length / 2),
+    index: selectedIndex,
     frameOffset,
     width,
   }).map(d => {
@@ -210,6 +181,7 @@ function init({data, frameOffset, width}) {
   });
   const secItems = layout({
     data: data.slice(data.length / 2),
+    index: selectedIndex,
     frameOffset,
     width,
   }).map(d => {
@@ -220,7 +192,7 @@ function init({data, frameOffset, width}) {
   return {firstItems, secItems};
 }
 
-export default class MyRecordColl extends React.Component {
+export default class MyRecordCollection extends React.Component {
   static propTypes = {
     width: PropTypes.number,
     height: PropTypes.number,
@@ -315,10 +287,18 @@ export default class MyRecordColl extends React.Component {
     } = this.props;
 
     const {selectedIndex, clicked} = this.state;
-    console.log('selectedIndex', selectedIndex);
+    const selectedRecord = selectedIndex !== null ? data[selectedIndex] : null;
+    const {tags: selectedTags} =
+      selectedRecord !== null ? selectedRecord : {tags: []};
+
+    const selectedData =
+      selectedTags.length > 0
+        ? data.filter(d => isSubset(d.tags, selectedTags))
+        : data;
 
     const {firstItems, secItems} = init({
       data,
+      index: selectedIndex,
       frameOffset: 2 * cardWidth,
       width,
     });
@@ -326,14 +306,8 @@ export default class MyRecordColl extends React.Component {
     const cloudHeight = height - 2 * cardHeight - 2 * pad;
 
     const tags = aggregateByTags(data).map(d => {
-      // TODO: check;
-      d.r = 25 + d.values.length;
-      d.width = d.r * 2;
-      d.height = d.r * 2;
-      d.highlighted = false;
-      d.x = (width - d.r) / 2;
-      d.y = height / 2;
-      return d;
+      const selected = isSubset([d.key], selectedTags);
+      return {...d, selected, weight: d.values.length};
     });
 
     const stackConf = {
@@ -349,27 +323,33 @@ export default class MyRecordColl extends React.Component {
       data: tags,
       width,
       height: cloudHeight,
-      padX: 20,
-      padY: 20,
+      padX: 5,
+      padY: 5,
     });
+
+    const onMouseOver = i => () =>
+      selectedIndex !== i && this.setState({selectedIndex: i});
+
+    const onMouseOut = i => () =>
+      selectedIndex !== i && this.setState({selectedIndex: null});
+
+    const onClick = i => () => this.setState({selectedIndex: i});
 
     const StackOne = (
       <Stack
         {...stackConf}
         data={firstItems}
-        selectedIndex={selectedIndex}
-        centered={clicked}>
+        selectedIndex={selectedIndex < firstItems.length ? selectedIndex : null}
+        centered={false}>
         {(ch, i) => (
           <Record
-            onMouseOver={() =>
-              selectedIndex !== i && this.setState({selectedIndex: i, clicked: false})
-            }
-            onMouseOut={() =>
-              selectedIndex !== i && this.setState({selectedIndex: null, clicked: false})
-            }
-            onClick={() => this.setState({selectedIndex: i, clicked: true})}
+            key={i}
+            onMouseOver={onMouseOver(i)}
+            onMouseOut={onMouseOut(i)}
+            onClick={onClick(i)}
             width={cardWidth}
             height={cardHeight}
+            style={{height: cardHeight}}
             img={ch.thumb}
             {...ch}
           />
@@ -381,17 +361,19 @@ export default class MyRecordColl extends React.Component {
       <Stack
         centered={false}
         duration={400}
-        selectedIndex={selectedIndex}
+        selectedIndex={selectedIndex > firstItems.length ? selectedIndex : null}
         unit="px"
         width={width}
-        height={100}
         slotSize={150}
         data={secItems}>
         {(ch, i) => (
           <Record
-            width={cardWidth}
             height={cardHeight}
             img={ch.thumb}
+            onMouseOver={onMouseOver(i)}
+            onMouseOut={onMouseOut(i)}
+            onClick={onClick(i)}
+            style={{height: cardHeight}}
             {...ch}
           />
         )}
@@ -403,95 +385,27 @@ export default class MyRecordColl extends React.Component {
 
     const tagCloudStyle = {
       position: 'relative',
-      height: `${cloudHeight}px`,
-      marginBottom: `${pad}px`,
-      marginTop: `${pad}px`,
+      height: cloudHeight,
+      marginBottom: pad,
+      marginTop: pad,
     };
 
-    const linksTop = flatten(
-      firstItems.map(c => {
-        const targets = treemapData.filter(t => c.tags.includes(t.data.key));
-        const l = targets.map(t => ({
-          order: c.first,
-          source: c,
-          target: t,
-        }));
-        return l;
-      }),
-    );
-    const PathsTop = linksTop.map(d => {
-      const source = {
-        x: d.source.pos + cardWidth / 2,
-        y: cardHeight,
-      };
-      const cp = [source.x, source.y + offsetY];
-      const target = [
-        d.target.left + d.target.width / 2,
-        cardHeight + pad + d.target.top,
-      ];
-      return (
-        <path
-          className={cxx.link}
-          d={drawPath([[source.x, source.y], cp, target])}
-        />
-      );
-    });
-
-    const linksBottom = flatten(
-      secItems.map(c => {
-        const targets = treemapData.filter(t => c.tags.includes(t.data.key));
-        const l = targets.map(t => ({
-          order: c.first,
-          source: c,
-          target: t,
-        }));
-        return l;
-      }),
-    );
-
-    const PathsBottom = linksBottom.map(d => {
-      const source = {
-        x: d.source.pos + cardWidth / 2,
-        y: height - cardHeight,
-      };
-      const cp = [source.x, source.y - offsetY];
-      const target = [
-        d.target.left + d.target.width / 2,
-        cardHeight + pad + d.target.top + d.target.height,
-      ];
-      return (
-        <path
-          className={cxx.link}
-          d={drawPath([[source.x, source.y], cp, target])}
-        />
-      );
-    });
 
     return (
-      <div className="relative">
-        <svg
-          className="absolute"
-          style={{
-            pointerEvents: 'none',
-            width: `${width}px`,
-            height: `${height}px`,
-            left: 0,
-            top: 0,
-          }}>
-          <defs />
-          <g>{PathsTop}</g>
-          <g>{PathsBottom}</g>
-        </svg>
+      <div>
         <div style={stackDim}>{StackOne}</div>
-        <div style={tagCloudStyle}>
-          <TagCloud
-            data={treemapData}
-            width={width}
-            height={cloudHeight}
-            padX={0}
-            padY={0}
-            onHover={d => console.log('yeah', d)}
-          />
+        <div className="relative">
+          <div style={tagCloudStyle}>
+            <TagCloud
+              data={treemapData}
+              width={width}
+              height={cloudHeight}
+              padX={10}
+              padY={10}
+              onHover={d => console.log('yeah', d)}
+              onClick={() => null}
+            />
+          </div>
         </div>
         <div style={stackDim}>
           <div className={`row ${cxx.stack}`}>{StackTwo}</div>
