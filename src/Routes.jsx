@@ -1,6 +1,8 @@
 import React from 'react';
+import {hot, setConfig} from 'react-hot-loader';
 
-import {hot} from 'react-hot-loader';
+setConfig({ pureSFC: true });
+// import {hot} from 'react-hot-loader';
 
 import {HashRouter, Switch, Route} from 'react-router-dom';
 

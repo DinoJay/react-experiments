@@ -1,5 +1,5 @@
 import React from 'react';
-import {AppContainer} from 'react-hot-loader';
+// import {AppContainer} from 'react-hot-loader';
 import ReactDOM from 'react-dom';
 
 import WebFont from 'webfontloader';
@@ -42,20 +42,15 @@ const WebFontConfig = {
 WebFont.load(WebFontConfig);
 
 const render = Component => {
-  ReactDOM.render(
-    <AppContainer>
-      <Component />
-    </AppContainer>,
-    document.getElementById('app'),
-  );
+  ReactDOM.render(<Component />, document.getElementById('app'));
 };
 
-if (module.hot) {
-  module.hot.accept('./Routes', () => {
-    console.log('hot');
-    render(Routes);
-  });
-}
+// if (module.hot) {
+//   module.hot.accept('./Routes', () => {
+//     console.log('hot');
+//     render(Routes);
+//   });
+// }
 render(Routes);
 
 // console.log('module ', module.hot ? 'hot' : 'cold');
