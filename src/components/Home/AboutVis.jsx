@@ -124,12 +124,12 @@ const AboutVis = class AboutVis extends React.Component {
     ];
 
     d3.forceSimulation(nodeData.concat(annoData))
-      // .alphaMin(0.8)
-      .force('collide', bboxCollide(getBBox).strength(0.2))
+      .alphaMin(0.8)
+      .force('collide', bboxCollide(getBBox).strength(0.02))
       .force(
         'extent',
         forceExtent()
-          .extent([[-40, 0], [width, height]])
+          .extent([[0, 0], [width, height]])
           .bbox(d => [
             [-d.width / 2 - padX, -d.height / 2 - padY],
             [d.width / 2 + padX / 2, d.height / 2 + padY / 2]
@@ -139,11 +139,15 @@ const AboutVis = class AboutVis extends React.Component {
       // .force('charge', d3.forceManyBody(d => d.height))
       .force(
         'Y',
-        d3.forceY(d => d.ty || 0).strength(d => (d.type === 'node' ? 1 : 0.3)),
+        d3
+          .forceY(d => d.ty || 0)
+          .strength(d => (d.type === 'node' ? 0.1 : 0.3)),
       )
       .force(
         'X',
-        d3.forceX(d => d.tx || 0).strength(d => (d.type === 'node' ? 1 : 0.3)),
+        d3
+          .forceX(d => d.tx || 0)
+          .strength(d => (d.type === 'node' ? 0.1 : 0.3)),
       )
       .on('tick', () => {
         this.setState({annoData, nodeData, links});

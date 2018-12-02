@@ -6,13 +6,13 @@ import flatten from 'lodash/flatten';
 import intersection from 'lodash/intersection';
 // import $ from 'jquery';
 
-import TagCloud from '../Bookmarks/TagCloud';
+import TagCloud, {Tag} from '../Bookmarks/TagCloud';
 
 import Stack from './Stack/Stack';
 // import d3Sketchy from '../../lib/d3.sketchy';
 // import SketchyCircle from './SketchyCircle';
 
-import cxx from './CardStack.scss';
+// import cxx from './CardStack.scss';
 
 import VinylIcon from './styles/disc-vinyl-icon.png';
 
@@ -31,19 +31,25 @@ const Record = ({
   highlight,
   uri,
   style,
+  onMouseOver,
+  onMouseOut,
   ...rest
 }) => (
   <div
-    {...rest}
+    onMouseOver={onMouseOver}
+    onMouseOut={onMouseOut}
     style={{
       zIndex: 2,
-      height: 140,
       background: `url(${VinylIcon}) center center no-repeat`,
       boxShadow:
         '0 5px 2px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.3)',
       ...style
     }}>
-    <img src={img} alt="" style={{objectFit: 'cover', height: '100%'}} />
+    <img
+      src={img}
+      alt=""
+      style={{objectFit: 'cover', height: '100%', width: '100%'}}
+    />
   </div>
 );
 
@@ -59,38 +65,6 @@ const Record = ({
 // }
 
 // wait(100000).then(() => console.log('four', 4));
-
-function makeTreemap({data, width, height, padX, padY}) {
-  const ratio = 4;
-  const sorted = data.sort((a, b) => b.weight - a.weight);
-  const treemap = d3
-    .treemap()
-    .size([width / ratio, height])
-    .paddingInner(0)
-    .round(true)
-    .tile(d3.treemapResquarify.ratio(1));
-
-  const size = d3
-    .scaleLinear()
-    .domain(d3.extent(data, d => d.weight))
-    .range([30, 100]);
-
-  const first = {name: 'root', children: sorted};
-  const root = d3.hierarchy(first).sum(d => size(d.weight));
-  treemap(root);
-  if (!root.children) return [];
-  root.children.forEach(d => {
-    d.left = padX / 2 + Math.round(d.x0 * ratio);
-    d.top = padY / 2 + Math.round(d.y0);
-
-    d.width = Math.round(d.x1 * ratio) - Math.round(d.x0 * ratio) - padX / 2;
-    d.height = Math.round(d.y1) - Math.round(d.y0) - padY / 2;
-  });
-
-  return root.children;
-  // const padY = 10;
-  // const padX = 20;
-}
 
 const drawPath = d3.line().curve(d3.curveStepAfter);
 
@@ -168,30 +142,6 @@ function layout({index = null, data, frameOffset, width}) {
   });
 }
 
-function init({data, selectedIndex, frameOffset, width}) {
-  const firstItems = layout({
-    data: data.slice(0, data.length / 2),
-    index: selectedIndex,
-    frameOffset,
-    width,
-  }).map(d => {
-    d.first = true;
-    d.highlighted = true;
-    return d;
-  });
-  const secItems = layout({
-    data: data.slice(data.length / 2),
-    index: selectedIndex,
-    frameOffset,
-    width,
-  }).map(d => {
-    d.first = false;
-    d.highlighted = true;
-    return d;
-  });
-  return {firstItems, secItems};
-}
-
 export default class MyRecordCollection extends React.Component {
   static propTypes = {
     width: PropTypes.number,
@@ -210,70 +160,7 @@ export default class MyRecordCollection extends React.Component {
     offsetY: 20,
   };
 
-  state = {selectedIndex: null, mode: null};
-  // hoverHandler = focussedFrame => {
-  //   const {data, cardWidth, width} = this.props;
-  //   const {treemapData: oldTreemapData} = this.state;
-  //   const frameOffset = cardWidth * 2;
-  //
-  //   const highlight = d => {
-  //     d.highlighted = _.intersection(d.tags, focussedFrame.tags).length > 0;
-  //     return d;
-  //   };
-  //
-  //   if (focussedFrame === null) {
-  //     const treemapData = oldTreemapData.map(t => {
-  //       t.highlighted = false;
-  //       return t;
-  //     });
-  //     this.setState({...init({data, frameOffset, width}), treemapData});
-  //     return;
-  //   }
-  //   //
-  //   // const treemapData = oldTreemapData.map(t => {
-  //   //   t.highlighted = focussedFrame.tags.includes(t.data.key);
-  //   //   return t;
-  //   // });
-  //
-  //   const treemapData = oldTreemapData.map(t => {
-  //     t.highlighted = focussedFrame.tags.includes(t.data.key);
-  //     return t;
-  //   });
-  //
-  //   const selectedIndex = data.findIndex(d => d.uri === focussedFrame.uri);
-  //
-  //   // this.setState({selectedIndex, hovered: true, treemapData});
-  // };
-  // shouldComponentUpdate() {
-  //   return false;
-  // }
-
-  // enterTag = key => {
-  //   if (key === null) this.setState(resetState);
-  //
-  //   const {tags, firstItems, secItems} = resetState(this.state);
-  //
-  //   const clonedTags = _.cloneDeep(tags).map(d => {
-  //     d.hover = d.key === key;
-  //     return d;
-  //   });
-  //   const highlight = d => {
-  //     d.highlighted = d.tags.includes(key);
-  //     return d;
-  //   };
-  //   const updFirstItems = firstItems.map(highlight);
-  //   const updSecItems = secItems.map(highlight);
-  //
-  //   this.setState({
-  //     tags: clonedTags,
-  //     firstItems: updFirstItems,
-  //     secItems: updSecItems,
-  //   });
-  // };
-
-  leaveTag = () => {
-    this.setState(resetState);
-  };
+  state = {selectedId: null, mode: null};
 
   render() {
     const {
@@ -286,22 +173,28 @@ export default class MyRecordCollection extends React.Component {
       data
     } = this.props;
 
-    const {selectedIndex, clicked} = this.state;
-    const selectedRecord = selectedIndex !== null ? data[selectedIndex] : null;
+    const stackBorder = Math.ceil(data.length / 2);
+    const {selectedId} = this.state;
+    const selectedRecord = data.find(d => d.id === selectedId) || {tags: []};
+
     const {tags: selectedTags} =
       selectedRecord !== null ? selectedRecord : {tags: []};
 
-    const selectedData =
-      selectedTags.length > 0
-        ? data.filter(d => isSubset(d.tags, selectedTags))
-        : data;
+    console.log('selectedTags', selectedTags);
+    const selectedIndex = data.findIndex(d => d.id === selectedId);
 
-    const {firstItems, secItems} = init({
-      data,
-      index: selectedIndex,
-      frameOffset: 2 * cardWidth,
-      width,
-    });
+    const firstIndex =
+      selectedIndex !== -1 && selectedIndex < stackBorder
+        ? selectedIndex
+        : null;
+
+    const secIndex =
+      selectedIndex !== -1 && selectedIndex >= stackBorder
+        ? selectedIndex - stackBorder
+        : null;
+
+    const firstItems = data.slice(0, stackBorder);
+    const secItems = data.slice(stackBorder);
 
     const cloudHeight = height - 2 * cardHeight - 2 * pad;
 
@@ -319,37 +212,33 @@ export default class MyRecordCollection extends React.Component {
       slotSize: 150,
     };
 
-    const treemapData = makeTreemap({
-      data: tags,
-      width,
-      height: cloudHeight,
-      padX: 5,
-      padY: 5,
-    });
+    // const treemapData = makeTreemap({
+    //   data: tags,
+    //   width,
+    //   height: cloudHeight,
+    //   padX: 5,
+    //   padY: 5,
+    // });
 
-    const onMouseOver = i => () =>
-      selectedIndex !== i && this.setState({selectedIndex: i});
+    const onMouseOver = id => () => {
+      this.setState({
+        selectedId: id,
+        selectedTags: data.find(d => d.id === id).tags
+      });
+    };
 
-    const onMouseOut = i => () =>
-      selectedIndex !== i && this.setState({selectedIndex: null});
+    const onMouseOut = () => false && this.setState({selectedId: null});
 
-    const onClick = i => () => this.setState({selectedIndex: i});
+    const onClick = id => () => null;
 
     const StackOne = (
-      <Stack
-        {...stackConf}
-        data={firstItems}
-        selectedIndex={selectedIndex < firstItems.length ? selectedIndex : null}
-        centered={false}>
-        {(ch, i) => (
+      <Stack {...stackConf} data={firstItems} selectedIndex={firstIndex}>
+        {ch => (
           <Record
-            key={i}
-            onMouseOver={onMouseOver(i)}
-            onMouseOut={onMouseOut(i)}
-            onClick={onClick(i)}
-            width={cardWidth}
-            height={cardHeight}
-            style={{height: cardHeight}}
+            key={ch.id}
+            onMouseOver={onMouseOver(ch.id)}
+            onMouseOut={onMouseOut}
+            style={{height: cardHeight, width: cardWidth}}
             img={ch.thumb}
             {...ch}
           />
@@ -357,23 +246,22 @@ export default class MyRecordCollection extends React.Component {
       </Stack>
     );
 
+    console.log(
+      'selectedIndex',
+      selectedIndex,
+      'firstIems len',
+      firstItems.length,
+    );
     const StackTwo = (
-      <Stack
-        centered={false}
-        duration={400}
-        selectedIndex={selectedIndex > firstItems.length ? selectedIndex : null}
-        unit="px"
-        width={width}
-        slotSize={150}
-        data={secItems}>
+      <Stack {...stackConf} data={secItems} selectedIndex={secIndex}>
         {(ch, i) => (
           <Record
-            height={cardHeight}
-            img={ch.thumb}
-            onMouseOver={onMouseOver(i)}
-            onMouseOut={onMouseOut(i)}
+            key={ch.id}
+            onMouseOver={onMouseOver(ch.id)}
+            onMouseOut={onMouseOut}
             onClick={onClick(i)}
-            style={{height: cardHeight}}
+            style={{height: cardHeight, width: cardWidth}}
+            img={ch.thumb}
             {...ch}
           />
         )}
@@ -383,33 +271,33 @@ export default class MyRecordCollection extends React.Component {
     // const { width, height } = this.props;
     const stackDim = {height: cardHeight};
 
-    const tagCloudStyle = {
-      position: 'relative',
-      height: cloudHeight,
-      marginBottom: pad,
-      marginTop: pad,
-    };
-
-
     return (
       <div>
         <div style={stackDim}>{StackOne}</div>
         <div className="relative">
-          <div style={tagCloudStyle}>
-            <TagCloud
-              data={treemapData}
-              width={width}
-              height={cloudHeight}
-              padX={10}
-              padY={10}
-              onHover={d => console.log('yeah', d)}
-              onClick={() => null}
-            />
-          </div>
+          <TagCloud
+            style={{
+              position: 'relative',
+              height: cloudHeight,
+              marginBottom: pad,
+              marginTop: pad,
+            }}
+            data={tags}
+            width={width}
+            height={cloudHeight}
+            padX={10}
+            padY={10}
+            onHover={d => console.log('yeah', d)}
+            onClick={() => null}>
+            {d => (
+              <Tag
+                {...d}
+                style={{background: isSubset(d.tags, selectedTags && 'black')}}
+              />
+            )}
+          </TagCloud>
         </div>
-        <div style={stackDim}>
-          <div className={`row ${cxx.stack}`}>{StackTwo}</div>
-        </div>
+        <div style={stackDim}>{StackTwo}</div>
       </div>
     );
   }

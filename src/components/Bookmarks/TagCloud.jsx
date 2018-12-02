@@ -1,10 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import * as d3 from 'd3';
+import * as d3 from 'd3';
 // import tsnejs from 'tsne';
 import _ from 'lodash';
 
-import ReactDom from 'react-dom';
+// import ReactDom from 'react-dom';
 // import sketchy from '../utils/d3.sketchy';
 
 import fitty from 'fitty';
@@ -45,7 +45,7 @@ function autoSizeText(container, attempts = 200, width, height) {
   resizeText(container);
 }
 
-class Tag extends React.Component {
+export class Tag extends React.Component {
   static propTypes = {
     children: PropTypes.array.isRequired,
     width: PropTypes.array.isRequired,
@@ -100,7 +100,8 @@ class Tag extends React.Component {
       onMouseEnter,
       onMouseLeave,
       padding,
-      selected
+      selected,
+      style
     } = this.props;
 
     const st = {
@@ -109,6 +110,7 @@ class Tag extends React.Component {
       width,
       height,
       transition: 'all 400ms',
+      ...style
       // wordBreak: 'break-all'
     };
 
@@ -134,41 +136,44 @@ class Tag extends React.Component {
   }
 }
 
-class TagCloud extends React.Component {
-  static propTypes = {
-    docWidth: PropTypes.array.isRequired,
-    docHeight: PropTypes.array.isRequired,
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    padX: PropTypes.number.isRequired,
-    padY: PropTypes.number.isRequired
-  };
+function makeTreemap({data, width, height, padX, padY}) {
+  const ratio = 4;
+  const sorted = data.sort((a, b) => b.weight - a.weight);
+  const treemap = d3
+    .treemap()
+    .size([width / ratio, height])
+    .paddingInner(0)
+    .round(true)
+    .tile(d3.treemapResquarify.ratio(1));
 
-  render() {
-    const {color, data, onHover} = this.props;
+  const size = d3
+    .scaleLinear()
+    .domain(d3.extent(data, d => d.weight))
+    .range([30, 100]);
 
-    const treemap = data.map((d, i) => (
-      <Tag
-        {...d}
-        color={color(d.data.key)}
-        padding={10}
-        index={i}
-        onMouseEnter={() => onHover(d.data.key)}
-        onMouseLeave={() => onHover(null)}
-      />
-    ));
-    return <div className="child-borders">{treemap}</div>;
-  }
+  const first = {name: 'root', children: sorted};
+  const root = d3.hierarchy(first).sum(d => size(d.weight));
+  treemap(root);
+  if (!root.children) return [];
+  root.children.forEach(d => {
+    d.left = padX / 2 + Math.round(d.x0 * ratio);
+    d.top = padY / 2 + Math.round(d.y0);
+
+    d.width = Math.round(d.x1 * ratio) - Math.round(d.x0 * ratio) - padX / 2;
+    d.height = Math.round(d.y1) - Math.round(d.y0) - padY / 2;
+  });
+
+  return root.children;
+  // const padY = 10;
+  // const padX = 20;
 }
 
-TagCloud.defaultProps = {
-  width: 800,
-  height: 400,
-  padX: 0,
-  padY: 0,
-  clickHandler: () => null,
-  color: () => 'red',
-  getCoords: d => d
-};
+export default function TagCloud({className, style, children, ...props}) {
+  const treemapData = makeTreemap(props);
 
-export default TagCloud;
+  return (
+    <div className={className} style={style}>
+      {treemapData.map(d => children({...d, ...d.data}))}
+    </div>
+  );
+}

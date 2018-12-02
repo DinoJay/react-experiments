@@ -33,8 +33,8 @@ class Title extends Component {
         } child-borders flex flex-col justify-center items-center ${className}`}
         style={{
           ...style,
-          width: '130%',
-          transform: 'translateX(-10%) rotate(-3deg)',
+          width: '110%',
+          transform: 'translateX(-5%) rotate(-3deg)',
 
           textShadow: `${1 + pad}px ${1 + pad}px #fe4902, ${2 + pad}px ${2 +
             pad}px #fe4902, ${3 + pad}px ${3 + pad}px #fe4902`
