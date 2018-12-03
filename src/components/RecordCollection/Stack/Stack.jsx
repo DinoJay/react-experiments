@@ -214,8 +214,6 @@ export default class CardStack extends Component {
       return baseLayout({...this.props, data: keyData});
     })();
 
-    console.log('dataPos', dataPos);
-
     const centerPos = c =>
       direction === 'vertical'
         ? {top: `${c.pos}${unit}`}

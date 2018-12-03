@@ -17,6 +17,7 @@ import Stack from './Stack/Stack';
 import VinylIcon from './styles/disc-vinyl-icon.png';
 
 const isSubset = (t0, t1) => {
+  console.log('t0', t0, 't1', t1);
   const ret = intersection(t0, t1).length > 0;
   return ret;
 };
@@ -87,10 +88,10 @@ function aggregateByTags(data) {
 const HookedColl = props => {
   const {cardHeight = 150, cardWidth = 150, width, height, pad, data} = props;
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   const stackBorder = Math.ceil(data.length / 2);
   const selectedRecord = data.find(d => d.id === selectedId);
-  const selectedTags = [];
 
   const selectedIndex = data.findIndex(d => d.id === selectedId);
 
@@ -107,10 +108,10 @@ const HookedColl = props => {
 
   const cloudHeight = height - 2 * cardHeight - 2 * pad;
 
-  const tags = aggregateByTags(data).map(d => {
-    const selected = isSubset([d.key], selectedTags);
-    return {...d, selected, weight: d.values.length};
-  });
+  const tags = aggregateByTags(data).map(d => ({
+    ...d,
+    weight: d.values.length,
+  }));
 
   const stackConf = {
     centered: false,
@@ -129,11 +130,15 @@ const HookedColl = props => {
   //   padY: 5,
   // });
 
-  const onMouseOver = id => () => {
-    setSelectedId(id);
+  const onMouseOver = d => () => {
+    setSelectedId(d.id);
+    setSelectedTags([...d.tags]);
   };
 
-  const onMouseOut = () => setSelectedId(null);
+  const onMouseOut = () => {
+    setSelectedId(null);
+    setSelectedTags([]);
+  };
 
   const onClick = id => () => null;
 
@@ -142,10 +147,7 @@ const HookedColl = props => {
       {ch => (
         <Record
           key={ch.id}
-          onMouseOver={() => {
-            console.log('yo', ch.id);
-            setSelectedId(ch.id);
-          }}
+          onMouseOver={onMouseOver(ch)}
           onMouseOut={onMouseOut}
           style={{height: cardHeight, width: 160}}
           img={ch.thumb}
@@ -160,7 +162,7 @@ const HookedColl = props => {
       {(ch, i) => (
         <Record
           key={ch.id}
-          onMouseOver={onMouseOver(ch.id)}
+          onMouseOver={onMouseOver(ch)}
           onMouseOut={onMouseOut}
           onClick={onClick(i)}
           style={{height: cardHeight, width: cardWidth}}
@@ -173,6 +175,7 @@ const HookedColl = props => {
 
   // const { width, height } = this.props;
   const stackDim = {height: cardHeight};
+  console.log('selectedTags', selectedTags);
 
   return (
     <div>
@@ -192,10 +195,14 @@ const HookedColl = props => {
           padY={10}
           onHover={d => console.log('yeah', d)}
           onClick={() => null}>
-          {d => (
+          {(d, i) => (
             <Tag
+              className={`border-${(i % 6) + 1} ${isSubset(
+                [d.key],
+                selectedTags,
+              ) && 'bg-black'}`}
               {...d}
-              style={{background: isSubset(d.tags, selectedTags && 'black')}}
+              textStyle={{color: isSubset([d.key], selectedTags) && 'white'}}
             />
           )}
         </TagCloud>

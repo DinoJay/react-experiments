@@ -7,7 +7,6 @@ import _ from 'lodash';
 // import ReactDom from 'react-dom';
 // import sketchy from '../utils/d3.sketchy';
 
-import fitty from 'fitty';
 import cxx from './TagCloud.scss';
 
 // const setChildrenToInheritFontSize = el => {
@@ -101,25 +100,24 @@ export class Tag extends React.Component {
       onMouseLeave,
       padding,
       selected,
-      style
+      style,
+      className, textStyle
     } = this.props;
-
-    const st = {
-      left,
-      top,
-      width,
-      height,
-      transition: 'all 400ms',
-      ...style
-      // wordBreak: 'break-all'
-    };
 
     return (
       <div
-        className={`${cxx.tag} ${
-          selected ? 'bg-brown' : 'bg-white'
-        } flex flex-col items-center justify-center text-xl `}
-        style={st}
+        className={`${
+          cxx.tag
+        } flex border-1 flex-col items-center justify-center text-xl ${className}`}
+        style={{
+          left,
+          top,
+          width,
+          height,
+          transition: 'all 400ms',
+          ...style
+          // wordBreak: 'break-all'
+        }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}>
         <div
@@ -127,7 +125,7 @@ export class Tag extends React.Component {
           ref={el => (this.node = el)}
           style={{
             display: 'inline-block',
-            whiteSpace: 'nowrap',
+            whiteSpace: 'nowrap', ...textStyle
           }}>
           {data.key}
         </div>
@@ -173,7 +171,7 @@ export default function TagCloud({className, style, children, ...props}) {
 
   return (
     <div className={className} style={style}>
-      {treemapData.map(d => children({...d, ...d.data}))}
+      {treemapData.map((d, i) => children({...d, ...d.data}, i))}
     </div>
   );
 }
