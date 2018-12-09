@@ -30,9 +30,57 @@ $pad: 5px;
   background: #fff;
 }
 
+.balloon {
+    align-self: flex-start;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    color: #333;
+    position: relative;
+    display: inline-block;
+    margin: 8px;
+    margin-bottom: 30px;
+    background-color: #fff;
+    box-shadow: 0 -4px #fff, 0 -8px #212529, 4px 0 #fff, 4px -4px #212529, 8px 0 #212529, 0 4px #fff, 0 8px #212529, -4px 0 #fff, -4px 4px #212529, -8px 0 #212529, -4px -4px #212529, 4px 4px #212529;
+}
+
+
+.balloon.from-right::after {
+
+    bottom: -18px;
+    width: 18px;
+    height: 3px;
+    margin-left: 8px;
+    background-color: #fff;
+    box-shadow: -4px 0 #212529, 4px 0 #212529, 4px 4px #fff, 0 4px #212529, 8px 4px #212529, 4px 8px #212529, 8px 8px #212529;
+
+}
+
+.balloon.from-right::before, .balloon.from-right::after {
+    right: 2rem;
+
+}
+.balloon::before, .balloon::after {
+    position: absolute;
+    content: "";
+
+}
+
+.balloon.from-right::before {
+    bottom: -14px;
+    width: 26px;
+    height: 10px;
+    background-color: #fff;
+    border-right: 4px solid #212529;
+    border-left: 4px solid #212529;
+
+}
+
+
 
 .bubble0 {
-  position: absolute;
+  // position: absolute;
 
   // z-index: 10;
   // bottom: $pad;
@@ -49,11 +97,6 @@ $pad: 5px;
 
 .bubble1 {
   content: "";
-  position: absolute;
-
-  // z-index: 10;
-  // width: $w1 / 2;
-  // height: $w1 / 2;
   border: $strokeWidth solid $black;
   background: #fff;
   border-radius: 50px;
@@ -63,11 +106,6 @@ $pad: 5px;
 
 .bubble2 {
   content: "";
-  position: absolute;
-
-  // z-index: 10;
-  // width: $w2 / 2;
-  // height: $w2 / 2;
   border: $strokeWidth solid $black;
   background: #fff;
   border-radius: 50px;
@@ -80,15 +118,14 @@ $pad: 5px;
   .branding {
     position: relative;
     flex: 1;
-    // padding: 40px;
     text-align: center;
-    // color: $secBrown;
-    // font-family: young;
   }
 
-  .portrait {
-    position: absolute;
-    right: 20px;
+
+
+    // transform:rotate(4deg);
+
+}
 
     .polaroid {
       padding: 6px 6px 12px 6px;
@@ -96,11 +133,6 @@ $pad: 5px;
       border: $strokeWidth solid $black;
       transform: rotate(5deg);
     }
-
-    // transform:rotate(4deg);
-
-  }
-}
 
 // table,  td {
 //   border: 2px solid grey !important;

@@ -75,65 +75,15 @@ class Tooltip extends Component {
 
   state = {textWidth: 0, textHeight: 0};
 
-  componentDidMount() {
-    const node = ReactDOM.findDOMNode(this.text);
-    const [textWidth, textHeight] = [node.offsetWidth, node.offsetHeight];
-    this.setState({textWidth, textHeight});
-  }
-
   render() {
     const {children, width, height, className, style} = this.props;
     const {textWidth, textHeight} = this.state;
 
-    const w0 = 25;
-    const w1 = 20;
-    const w2 = 15;
     return (
       <div
-        className={className}
-        style={{
-          ...style,
-          position: 'absolute',
-          // border: 'black solid 1px',
-          width,
-          height
-        }}>
-        <div
-          ref={text => (this.text = text)}
-          className={`${cx.speechBubble} border-5`}>
-          {children}
-        </div>
-        <div style={{position: 'absolute', left: textWidth, top: textHeight}}>
-          <div
-            className={`${cx.bubble0} border-4`}
-            style={{
-              width: w0,
-              height: w0,
-              position: 'absolute',
-              top: (-w0 * 3) / 4
-            }}
-          />
-          <div
-            className={`${cx.bubble1} border-5`}
-            style={{
-              width: w1,
-              height: w1,
-              position: 'absolute',
-              left: w0,
-              top: -w1 / 2
-            }}
-          />
-          <div
-            className={`${cx.bubble2} border-6`}
-            style={{
-              width: w2,
-              height: w2,
-              position: 'absolute',
-              left: w0 + w1,
-              top: 0
-            }}
-          />
-        </div>
+        style={{width: 170, ...style}}
+        className={`${cx.balloon} ${cx['from-right']} text-lg`}>
+        What's going on?
       </div>
     );
   }
@@ -154,23 +104,22 @@ const SomethingAboutMe = ({className}) => (
   </div>
 );
 
-const MyTable = ({className}) =>
-  {
-    return <table className={className}>
-      <tr>
-        <th className="flex">
-          <div>__Day__ </div>
-          <span role="img" aria-label="emoji" className={cx.emoji}>
-            🌇
-          </span>
-        </th>
-    <th>
-      **Night**{' '}
-    <span role="img" aria-label="emoji" className={cx.emoji}>
-      🌃
-    </span>
-  </th>
-</tr>
+const MyTable = ({className}) => (
+  <table className={className}>
+    <tr>
+      <th className="flex">
+        <div>__Day__ </div>
+        <span role="img" aria-label="emoji" className={cx.emoji}>
+          🌇
+        </span>
+      </th>
+      <th>
+        **Night**{' '}
+        <span role="img" aria-label="emoji" className={cx.emoji}>
+          🌃
+        </span>
+      </th>
+    </tr>
     <tr>
       <td>
         <div>Gazing at </div>
@@ -188,93 +137,93 @@ const MyTable = ({className}) =>
     <tr>
       <td>
         Visualizing data{' '}
-    <span role="img" aria-label="emoji" className={cx.emoji}>
-      📊
-    </span>
-  </td>
-    <td>
-      <img
-        alt="headphones"
-        style={{width: '33px', height: '33px'}}
-        src={headphonesIcon}
-      />{' '}
-    <img
-      alt="mixing"
-      style={{width: '33px', height: '33px'}}
-      src={vinylIcon}
-    />{' '}
-    music{' '}
-    <span role="img" aria-label="emoji" className={cx.emoji}>
-      😎
-    </span>
-  </td>
-</tr>
+        <span role="img" aria-label="emoji" className={cx.emoji}>
+          📊
+        </span>
+      </td>
+      <td>
+        <img
+          alt="headphones"
+          style={{width: '33px', height: '33px'}}
+          src={headphonesIcon}
+        />{' '}
+        <img
+          alt="mixing"
+          style={{width: '33px', height: '33px'}}
+          src={vinylIcon}
+        />{' '}
+        music{' '}
+        <span role="img" aria-label="emoji" className={cx.emoji}>
+          😎
+        </span>
+      </td>
+    </tr>
     <tr>
       <td>
         getting lost in hyperspace{' '}
-    <img
-      style={{width: '33px', height: '33px'}}
-      alt="astro"
-      src={astroIcon}
-    />
-  </td>
-  <td>scratching my head about real life </td>
+        <img
+          style={{width: '33px', height: '33px'}}
+          alt="astro"
+          src={astroIcon}
+        />
+      </td>
+      <td>scratching my head about real life </td>
     </tr>
     <tr>
       <td>
         fiddling with{' '}
-    <img
-      alt="js"
-      src={jsLogo}
-      style={{
-        width: '22px',
-          height: '22px',
-          verticalAlign: 'top',
-      }}
-    />
-    {' ,'}
-    <img
-      alt="react"
-      src={reactLogo}
-      style={{
-        width: '22px',
-          height: '22px',
-          verticalAlign: 'top',
-      }}
-    />{' '}
-    and{' '}
-    <img
-      src={d3Logo}
-      alt="d3"
-      style={{
-        width: '22px',
-        height: '22px',
-        verticalAlign: 'top'
-      }}
-    />
-  </td>
-  <td>learning French and Dutch, forgetting German</td>
-</tr>
-<tr>
-  <td>
-    <img
-      style={{width: '33px', height: '33px'}}
-    alt="coffee"
-    src={coffeeIcon}
-  />{' '}
-  Bonjour
-</td>
-<td>
-  <img
-    style={{width: '33px', height: '33px'}}
-    alt="beer"
-    src={beerIcon}
-  />{' '}
-  Prost!
-</td>
-      </tr>
-    </table>
-  }
+        <img
+          alt="js"
+          src={jsLogo}
+          style={{
+            width: '22px',
+            height: '22px',
+            verticalAlign: 'top'
+          }}
+        />
+        {' ,'}
+        <img
+          alt="react"
+          src={reactLogo}
+          style={{
+            width: '22px',
+            height: '22px',
+            verticalAlign: 'top'
+          }}
+        />{' '}
+        and{' '}
+        <img
+          src={d3Logo}
+          alt="d3"
+          style={{
+            width: '22px',
+            height: '22px',
+            verticalAlign: 'top',
+          }}
+        />
+      </td>
+      <td>learning French and Dutch, forgetting German</td>
+    </tr>
+    <tr>
+      <td>
+        <img
+          style={{width: '33px', height: '33px'}}
+          alt="coffee"
+          src={coffeeIcon}
+        />{' '}
+        Bonjour
+      </td>
+      <td>
+        <img
+          style={{width: '33px', height: '33px'}}
+          alt="beer"
+          src={beerIcon}
+        />{' '}
+        Prost!
+      </td>
+    </tr>
+  </table>
+);
 const Home = ({width, height, picDim}) => (
   <div className="flex-grow flex flex-col">
     <div className={cx.header}>
@@ -283,11 +232,10 @@ const Home = ({width, height, picDim}) => (
         <h1 className="text-4xl">Jan Maushagen</h1>
         <SocialMedia />
       </div>
-      <div className={cx.portrait}>
-        <Tooltip
-          width={picDim.width}
-          height={picDim.height}
-          style={{right: picDim.width + picDim.marginLeft}}>
+      <div
+        style={{right: 0, paddingRight: 20}}
+        className={`${cx.portrait} flex items-start absolute`}>
+        <Tooltip style={{transform: 'translateY(-10px)'}}>
           {'Alright...'}
         </Tooltip>
         <div className={cx.polaroid}>
