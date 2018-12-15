@@ -197,7 +197,7 @@ const HookedColl = props => {
           onClick={() => null}>
           {(d, i) => (
             <Tag
-              className={`border-${(i % 6) + 1} ${isSubset(
+              className={`border-${(i % 6) + 1}x ${isSubset(
                 [d.key],
                 selectedTags,
               ) && 'bg-black'}`}

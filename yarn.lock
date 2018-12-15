@@ -886,6 +886,21 @@
   resolved "https://registry.yarnpkg.com/@firebase/webchannel-wrapper/-/webchannel-wrapper-0.2.11.tgz#32a853fad9974cbbc9fc766ec5699a18b22ccee6"
   integrity sha512-WyMXDxk/WZ+f2lOCeEvDWUce2f5Kk2sNfvArK8f+PlUnzFdy/MBzLXrmbMgyZXP7GP4ooUxYV8Sdmoh1hGk1Uw==
 
+"@popmotion/easing@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@popmotion/easing/-/easing-1.0.1.tgz#48336aea29542113df10aeb81b4fd10f0b95f937"
+  integrity sha512-NbIEz9mZAem0F0sjg2v57LbU9Y2Xc50QEX434jYrwEQzXJuJipyUV48Qz4hjHqbB/8xiUj0JMQfRvP8K9nUbxg==
+
+"@popmotion/popcorn@^0.3.0":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@popmotion/popcorn/-/popcorn-0.3.1.tgz#f0f33fbf7ff66f2cd0bf28be24bee0b1d46b65e8"
+  integrity sha512-TRhDPxfzM4CrUff2ELyzDj6xSEp5fcmbnrTO0VkmrN/TxJrAzP2H/VfIDRQQy82Yn65Vwn1ohrIi8eZLqzrCMA==
+  dependencies:
+    "@popmotion/easing" "^1.0.1"
+    framesync "^4.0.1"
+    hey-listen "^1.0.5"
+    style-value-types "^3.0.7"
+
 "@vx/axis@^0.0.176":
   version "0.0.176"
   resolved "https://registry.yarnpkg.com/@vx/axis/-/axis-0.0.176.tgz#5d3c38dbf94545f894b0d11f7772752bba5960e6"
@@ -1165,6 +1180,14 @@ alphanum-sort@^1.0.1, alphanum-sort@^1.0.2:
 amdefine@>=0.0.4:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/amdefine/-/amdefine-1.0.1.tgz#4a5282ac164729e93619bcfd3ad151f817ce91f5"
+
+animate-css-grid@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/animate-css-grid/-/animate-css-grid-1.0.4.tgz#4e073c5eda1fb81583f239409011c22ca7e433d1"
+  integrity sha512-ab353fPYs/cIHIibiCqobCx2G7KEQi/JsVuiGzeztZaVQfwUm6Wx2Gm+OEO502Ox4TttJPkmnmofDhm4ZDnA/g==
+  dependencies:
+    lodash.throttle "^4.1.1"
+    popmotion "^8.2.3"
 
 ansi-escapes@^3.0.0:
   version "3.1.0"
@@ -3539,6 +3562,13 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
+framesync@^4.0.0, framesync@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/framesync/-/framesync-4.0.1.tgz#ed7791baf0d266f58ab02000456f82cb384815bf"
+  integrity sha512-7dF3SXz/xMdwSHFHgj8PV2dAUCFclXWhasAb06rFvAM2pX24m9eDs6X+ikK0kx92w/uIljUi0sBINwcbl0rT2Q==
+  dependencies:
+    hey-listen "^1.0.5"
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
@@ -3867,6 +3897,11 @@ hash.js@^1.0.0, hash.js@^1.0.3:
 he@1.1.x:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/he/-/he-1.1.1.tgz#93410fd21b009735151f8868c2f271f3427e23fd"
+
+hey-listen@^1.0.4, hey-listen@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/hey-listen/-/hey-listen-1.0.5.tgz#6d0a3a2f60177f65bc4404d571a00025bf5dc20e"
+  integrity sha512-O2iCNxBBGb4hOxL9tUdnoPwDYmZhQ29t5xKV74BVZNdvwCDXCpVYTJ4yoaibc1V0I8Yw3K3nwmvDpoyjnCqUaw==
 
 history@^4.7.2:
   version "4.7.2"
@@ -4661,6 +4696,11 @@ lodash.mergewith@^4.6.0:
 lodash.tail@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.tail/-/lodash.tail-4.1.1.tgz#d2333a36d9e7717c8ad2f7cacafec7c32b444664"
+
+lodash.throttle@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.throttle/-/lodash.throttle-4.1.1.tgz#c23e91b710242ac70c37f1e1cda9274cc39bf2f4"
+  integrity sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=
 
 lodash.uniq@^4.5.0:
   version "4.5.0"
@@ -5621,6 +5661,19 @@ pkg-dir@^3.0.0:
 pluralize@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/pluralize/-/pluralize-7.0.0.tgz#298b89df8b93b0221dbf421ad2b1b1ea23fc6777"
+
+popmotion@^8.2.3:
+  version "8.5.4"
+  resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-8.5.4.tgz#db6393f745df585290f0858207561a9bbba545b5"
+  integrity sha512-cjQY4tTHhuq7dHl6w/eTKwbBOccI3RcZeF+OCuyuSbJoRe5It9Lcft5cV0MX/7ZoEpFAlu9ZbJ+fzNOBkXckxA==
+  dependencies:
+    "@popmotion/easing" "^1.0.1"
+    "@popmotion/popcorn" "^0.3.0"
+    framesync "^4.0.0"
+    hey-listen "^1.0.5"
+    style-value-types "^3.0.6"
+    stylefire "^2.0.7"
+    tslib "^1.9.1"
 
 portfinder@^1.0.9:
   version "1.0.16"
@@ -7136,6 +7189,20 @@ style-loader@0.18.2:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
 
+style-value-types@^3.0.6, style-value-types@^3.0.7:
+  version "3.0.7"
+  resolved "https://registry.yarnpkg.com/style-value-types/-/style-value-types-3.0.7.tgz#6e7a22cc8b1a4465193268ed66ad5f2a82579054"
+  integrity sha512-7vzeicDiPNnJjvTYfJbQhZ7P3OCkXfvkJOJQ+ifFnXNTA/7KBxMZacHLvlRjM5/TtXbVdrZE6u+2nzSUSPrbSQ==
+
+stylefire@^2.0.7:
+  version "2.3.3"
+  resolved "https://registry.yarnpkg.com/stylefire/-/stylefire-2.3.3.tgz#25a32d7aeece8cf2ed499613bf4fb3db18e6dece"
+  integrity sha512-+z2sFuGO1wKRnVgBcm2/z1gmS5s8xXnICnD/1iEI49fChVLvvz65J6AMbw9aftUB06vxGK7lEeewzmoiwWOF4w==
+  dependencies:
+    framesync "^4.0.0"
+    hey-listen "^1.0.4"
+    style-value-types "^3.0.6"
+
 supports-color@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-2.0.0.tgz#535d045ce6b6363fa40117084629995e9df324c7"
@@ -7357,7 +7424,7 @@ tslib@1.9.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.0.tgz#e37a86fda8cbbaf23a057f473c9f4dc64e5fc2e8"
   integrity sha512-f/qGG2tUkrISBlQZEjEqoZ3B2+npJjIf04H1wuAv9iA8i04Icp+61KRXxFdha22670NJopsZCIjhC3SnjPRKrQ==
 
-tslib@^1.9.0:
+tslib@^1.9.0, tslib@^1.9.1:
   version "1.9.3"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 

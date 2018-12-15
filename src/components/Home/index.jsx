@@ -248,7 +248,7 @@ const Home = ({width, height, picDim}) => (
       </div>
     </div>
     <div className="flex flex-grow">
-      <div>
+      <div className="flex-grow flex flex-col justify-between">
         <SomethingAboutMe className="text-base mb-5" />
         <MyTable className={`text-lg ${cx.myTable}`} />
       </div>

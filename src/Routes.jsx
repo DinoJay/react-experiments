@@ -1,7 +1,5 @@
 import React from 'react';
 import {hot, setConfig} from 'react-hot-loader';
-
-setConfig({ pureSFC: true });
 // import {hot} from 'react-hot-loader';
 
 import {HashRouter, Switch, Route} from 'react-router-dom';
@@ -14,8 +12,10 @@ import {
   COLLAGE,
   RECORDCOLLECTION,
   PROJECTS,
-  SCREENSHOTS
+  SCREENSHOTS,
 } from './routePaths';
+
+setConfig({pureSFC: true});
 
 const Routes = () => (
   <HashRouter>
@@ -41,6 +41,11 @@ const Routes = () => (
         exact
         path={RECORDCOLLECTION.path}
         render={() => <App path={RECORDCOLLECTION.path} />}
+      />
+      <Route
+        exact
+        path={SCREENSHOTS.path}
+        render={() => <App path={SCREENSHOTS.path} />}
       />
     </Switch>
   </HashRouter>

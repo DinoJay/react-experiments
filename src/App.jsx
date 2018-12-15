@@ -23,10 +23,10 @@ import {
 // import './global/index.scss';
 
 const SMALL_HEIGHT = 670;
-const SMALL_WIDTH = 890;
+const SMALL_WIDTH = 990;
 
 const BIG_WIDTH = 1000;
-const BIG_HEIGHT = 770;
+const BIG_HEIGHT = 670;
 
 const selectElement = (path, pr) => {
   switch (path) {
@@ -190,7 +190,10 @@ class App extends React.Component {
             clickHandler={this.clickHandler}
           />
         </div>
-        <div id={cxx.right} className={`${cxx.mainCont} flex flex-col`}>
+        <div
+          id={cxx.right}
+          className={`${cxx.mainCont} flex flex-col`}
+          style={{width, height}}>
           <div className={`${cxx.flipContainer} flex-grow flex flex-col`}>
             <div
               className={`${cxx.flipper} flex-grow flex flex-col`}
@@ -200,20 +203,11 @@ class App extends React.Component {
                 zIndex: back ? 3 : null,
               }}>
               <div
-                className={`${cxx.front} flex flex-col overflow-visible`}
-                style={{
-                  width,
-                  height,
-                  zIndex: back ? -1 : null,
-                }}>
+                className={`${cxx.front} flex flex-col`}
+                style={{zIndex: back ? -1 : null}}>
                 {!back ? ActiveElement : PassiveElement}
               </div>
-              <div
-                className={`${cxx.back} flex flex-col overflow-visible`}
-                style={{
-                  width,
-                  height
-                }}>
+              <div className={`${cxx.back} flex flex-col `}>
                 <div className={cxx.passiveElement}>
                   {back ? ActiveElement : PassiveElement}
                 </div>
