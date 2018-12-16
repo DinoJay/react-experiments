@@ -6,7 +6,7 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const loaders = require('./webpack.loaders');
 
-const apiTokens = require('./api_keys.json');
+const apiTokens = require('./api-keys.json');
 
 // const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -55,4 +55,4 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin(apiTokens),
   ],
-};
+;

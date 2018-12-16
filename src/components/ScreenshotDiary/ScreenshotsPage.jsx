@@ -16,14 +16,13 @@ function ScreenshotDiary(props) {
   const filteredData = id !== null ? data.filter(d => d.id === id) : data;
 
   const gridRef = React.createRef();
-  let forceAnim = null;
+  const forceAnim = null;
   useEffect(() => {
-    const {forceGridAnimation} = wrapGrid(gridRef.current, {
-      easing: 'backOut',
+    wrapGrid(gridRef.current, {
+      // easing: 'backOut',
       stagger: 10,
       duration: 400
     });
-    forceAnim = forceGridAnimation;
   }, []);
 
   // useEffect(
@@ -37,17 +36,18 @@ function ScreenshotDiary(props) {
   return (
     <div
       ref={gridRef}
-      className="flex-grow pr-8 pb-6"
+      className="w-full h-full overflow-y-auto"
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(10rem, 1fr))',
-        gridTemplateRows: 'minmax(10hem, 1fr)',
-        gridAutoRows: '10rem',
+        // gridTemplateRows: 'minmax(1fr, 20rem)',
+        gridAutoRows: '1fr',
         gridGap: '16px',
         // gridAutoFlow: 'dense',
       }}>
       {filteredData.map(d => (
         <div
+          key={d.id}
           className={`border-black border-2 border-2x flex flex-col overflow-hidden ${
             // dummy class to trigger upd
             id === d.id ? 'animate' : null
@@ -58,11 +58,10 @@ function ScreenshotDiary(props) {
           }}
           onClick={() => (d.id !== id ? select(d.id) : select(null))}>
           <img
-            className=""
+            className="h-full"
             src={d.url_c}
             style={{
-              objectFit: 'cover',
-              height: 'fit-content'
+              objectFit: 'contain',
               // width: '10rem',
               // height: '10rem'
             }}

@@ -4,6 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ErrorOverlayPlugin = require('error-overlay-webpack-plugin');
 const tailwindcss = require('tailwindcss');
 
+const apiTokens = require('./api-keys.json');
+
 const loaders = require('./webpack.loaders');
 
 const alias = require('./alias');
@@ -68,6 +70,7 @@ module.exports = {
       template: './src/template.html',
       title: 'my react experiments',
     }),
+    new webpack.EnvironmentPlugin(apiTokens),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'),
     }),

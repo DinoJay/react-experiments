@@ -1,14 +1,8 @@
 // import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
+import React, {useState} from 'react';
 
-import {useState} from 'react';
-// import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-// import $ from 'jquery';
 import cxx from './components/app.scss';
-
-// import Bookmarks from './Bookmarks';
-// import LongIslandGirls from './components/LongIslandGirls';
 import {
   INDEX,
   CV,
@@ -17,16 +11,12 @@ import {
   PROJECTS,
   SCREENSHOTS
 } from './routePaths';
-// import Nav from './components/Nav';
-// import cxx from './components/cxx/nav.scss';
-// import './global/annotation.scss';
-// import './global/index.scss';
 
-const SMALL_HEIGHT = 670;
+const SMALL_HEIGHT = 690;
 const SMALL_WIDTH = 990;
 
 const BIG_WIDTH = 1000;
-const BIG_HEIGHT = 670;
+const BIG_HEIGHT = 690;
 
 const selectElement = (path, pr) => {
   switch (path) {
@@ -95,7 +85,7 @@ const Nav = ({clickHandler, path, className}) => {
           </li>
           <li>
             <a onClick={clickHandler} href={SCREENSHOTS.path}>
-              Screenshot Diary{' '}
+              Work in Progress{' '}
               <small className="hidden">
                 (my unfinished ramblings when the day is over)
               </small>
@@ -185,32 +175,29 @@ class App extends React.Component {
         style={{marginTop: `${marginTop}px`}}>
         <div>
           <Nav
-            className={`${cxx.nav} p-8 mr-10 font-mono `}
+            className={`${cxx.nav} p-8 mr-10 font-mono`}
             path={path}
             clickHandler={this.clickHandler}
           />
         </div>
-        <div
-          id={cxx.right}
-          className={`${cxx.mainCont} flex flex-col`}
-          style={{width, height}}>
-          <div className={`${cxx.flipContainer} flex-grow flex flex-col`}>
+        <div style={{width, height}}>
+          <div className={`${cxx.flipContainer}`} style={{width}}>
             <div
-              className={`${cxx.flipper} flex-grow flex flex-col`}
+              className={`${cxx.flipper} w-full`}
               style={{
                 transformOrigin: `100% ${comProps.height / 2 + marginTop}px`,
+                width,
+                height,
                 transform: back ? 'rotateX(180deg)' : null,
                 zIndex: back ? 3 : null,
               }}>
               <div
-                className={`${cxx.front} flex flex-col`}
-                style={{zIndex: back ? -1 : null}}>
+                className={`${cxx.front} w-full`}
+                style={{zIndex: back ? -1 : null, width, height}}>
                 {!back ? ActiveElement : PassiveElement}
               </div>
-              <div className={`${cxx.back} flex flex-col `}>
-                <div className={cxx.passiveElement}>
-                  {back ? ActiveElement : PassiveElement}
-                </div>
+              <div className={`${cxx.back} w-full`} style={{width, height}}>
+                {back ? ActiveElement : PassiveElement}
               </div>
             </div>
           </div>

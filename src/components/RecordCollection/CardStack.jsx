@@ -12,8 +12,6 @@ import Stack from './Stack/Stack';
 // import d3Sketchy from '../../lib/d3.sketchy';
 // import SketchyCircle from './SketchyCircle';
 
-// import cxx from './CardStack.scss';
-
 import VinylIcon from './styles/disc-vinyl-icon.png';
 
 const isSubset = (t0, t1) => {
