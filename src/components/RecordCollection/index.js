@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 // import * as d3 from 'd3';
 
@@ -7,11 +7,12 @@ import PropTypes from 'prop-types';
 // import $ from 'jquery';
 // import prune from 'json-prune';
 
-import getData from './discogsData';
+// import getData from './discogsData';
 
 // import $ from 'jquery';
-import RecordCollection from './CardStack';
+import RecordCollectionPage from './RecordCollectionPage.jsx';
 import DotDotDot from '../utils/DotDotDot';
+
 // import getData from './discogsData';
 // import dummyData from './dummyData';
 // import postcardStyle from '../styles/postcard.scss';
@@ -24,6 +25,8 @@ defaultData.forEach((d, i) => {
   d.id = i;
 });
 
+const url = `https://api.discogs.com/users/anarcho123/collection/folders/0/releases?sort=added&sort_order=desc&key=CHTgPJQvhItQQIGlwGDQ&secret=ycmSSHkasuEAGnarRUmhbsrukjKzShaN`;
+
 // console.log('defaultData', defaultData);
 
 // const wait = ms =>
@@ -34,6 +37,13 @@ defaultData.forEach((d, i) => {
 //     }, ms)
 //   );
 
-export default props => (
-  <RecordCollection {...props} pad={30} data={defaultData} />
-);
+export default props => {
+  useEffect(() => {
+    fetch(url, {mode: 'cors'})
+      .then(response => response.json())
+      .then(result => {
+        console.log('discogsData', result);
+      });
+  }, []);
+  return <RecordCollectionPage {...props} pad={30} data={defaultData} />;
+};

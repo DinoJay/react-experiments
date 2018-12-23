@@ -15,8 +15,8 @@ import {
 const SMALL_HEIGHT = 690;
 const SMALL_WIDTH = 990;
 
-const BIG_WIDTH = 1000;
-const BIG_HEIGHT = 690;
+const BIG_WIDTH = 1100;
+const BIG_HEIGHT = 720;
 
 const selectElement = (path, pr) => {
   switch (path) {

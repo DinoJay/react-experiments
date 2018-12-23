@@ -1,6 +1,6 @@
 # My React experiments
 
-Boilerplate project to bundle react jsx applications
+My personal webpage
 
 ### To run
 
@@ -31,3 +31,8 @@ Open the web browser to `localhost:3000`
 > $ npm run build
 ```
 😛
+
+
+### Credits
+built with tailwind, papercss, nes-css
+

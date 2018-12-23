@@ -96,6 +96,15 @@ div {
   @apply .text-black;
 }
 
+.sepia-img-filter {
+  filter: grayscale(0.7) sepia(0.1);
+}
+
+
+.sepia-img-filter-disabled {
+  filter: none;
+}
+
 
 // @font-face {
 //   font-family: typeWriter;
@@ -111,6 +120,11 @@ div {
 @font-face {
   font-family: "sliced juice";
   src: url(./sliced_juice.ttf);
+}
+@font-face {
+  font-family: kongtext;
+  src: url(./kongtext.ttf);
+  // font-weight: bold;
 }
 
 // path {

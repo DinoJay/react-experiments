@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 // import ReactDOM from 'react-dom';
 import * as d3 from 'd3';
@@ -15,7 +15,6 @@ import Stack from './Stack/Stack';
 import VinylIcon from './styles/disc-vinyl-icon.png';
 
 const isSubset = (t0, t1) => {
-  console.log('t0', t0, 't1', t1);
   const ret = intersection(t0, t1).length > 0;
   return ret;
 };
@@ -32,6 +31,7 @@ const Record = ({
   style,
   onMouseOver,
   onMouseOut,
+  className,
   ...rest
 }) => (
   <div
@@ -43,6 +43,7 @@ const Record = ({
       ...style
     }}>
     <img
+      className={className}
       style={{
         boxShadow:
           '0 5px 2px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.3)'
@@ -84,12 +85,23 @@ function aggregateByTags(data) {
 }
 
 const HookedColl = props => {
-  const {cardHeight = 150, cardWidth = 150, width, height, pad, data} = props;
+  const {
+    cardHeight = 150,
+    cardWidth = 150,
+    width,
+    height,
+    pad,
+    data,
+    tags
+  } = props;
   const [selectedId, setSelectedId] = useState(null);
-  const [selectedTags, setSelectedTags] = useState([]);
 
   const stackBorder = Math.ceil(data.length / 2);
-  const selectedRecord = data.find(d => d.id === selectedId);
+  const selectedRecord = data.find(d => d.id === selectedId) || null;
+  const selectedTags = selectedRecord ? selectedRecord.tags : [];
+  const selectedRecIds = data
+    .filter(d => isSubset(d.tags, selectedTags))
+    .map(d => d.id);
 
   const selectedIndex = data.findIndex(d => d.id === selectedId);
 
@@ -105,11 +117,6 @@ const HookedColl = props => {
   const secItems = data.slice(stackBorder);
 
   const cloudHeight = height - 2 * cardHeight - 2 * pad;
-
-  const tags = aggregateByTags(data).map(d => ({
-    ...d,
-    weight: d.values.length,
-  }));
 
   const stackConf = {
     centered: false,
@@ -130,21 +137,29 @@ const HookedColl = props => {
 
   const onMouseOver = d => () => {
     setSelectedId(d.id);
-    setSelectedTags([...d.tags]);
   };
 
   const onMouseOut = () => {
     setSelectedId(null);
-    setSelectedTags([]);
   };
 
   const onClick = id => () => null;
+
+  const imgFilterClass = chId =>
+    selectedId !== chId ? 'sepia-img-filter' : 'sepia-img-filter-disabled';
+
+  const highlight = chId => {
+    return selectedRecIds.includes(chId)
+      ? 'sepia-img-filter'
+      : 'sepia-img-filter-disabled';
+  };
 
   const StackOne = (
     <Stack {...stackConf} data={firstItems} selectedIndex={firstIndex}>
       {ch => (
         <Record
           key={ch.id}
+          className={highlight(ch.id)}
           onMouseOver={onMouseOver(ch)}
           onMouseOut={onMouseOut}
           style={{height: cardHeight, width: 160}}
@@ -160,6 +175,7 @@ const HookedColl = props => {
       {(ch, i) => (
         <Record
           key={ch.id}
+          className={highlight(ch.id)}
           onMouseOver={onMouseOver(ch)}
           onMouseOut={onMouseOut}
           onClick={onClick(i)}
@@ -173,7 +189,7 @@ const HookedColl = props => {
 
   // const { width, height } = this.props;
   const stackDim = {height: cardHeight};
-  console.log('selectedTags', selectedTags);
+  console.log('selectedTags', selectedTags, 'selectedCards', selectedRecIds);
 
   return (
     <div>
@@ -210,4 +226,13 @@ const HookedColl = props => {
   );
 };
 
-export default HookedColl;
+const RecordCollectionWrapper = ({data, ...rest}) => {
+  const tags = aggregateByTags(data).map(d => ({
+    ...d,
+    weight: d.values.length,
+  }));
+
+  return <HookedColl {...rest} data={data} tags={tags} />;
+};
+
+export default RecordCollectionWrapper;

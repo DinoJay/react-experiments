@@ -81,9 +81,9 @@ class Tooltip extends Component {
 
     return (
       <div
-        style={{width: 170, ...style}}
-        className={`${cx.balloon} ${cx['from-right']} text-lg`}>
-        What's going on?
+        style={{fontFamily: 'kongtext', fontStyle: 'italic', ...style}}
+        className={`${cx.balloon} ${cx['from-right']} p-2`}>
+        Alright...
       </div>
     );
   }
@@ -141,7 +141,7 @@ const MyTable = ({className}) => (
           📊
         </span>
       </td>
-      <td>
+      <td className="flex items-center">
         <img
           alt="headphones"
           style={{width: '33px', height: '33px'}}
@@ -151,8 +151,8 @@ const MyTable = ({className}) => (
           alt="mixing"
           style={{width: '33px', height: '33px'}}
           src={vinylIcon}
-        />{' '}
-        music{' '}
+        />
+        <div className="pl-1 pr-1">music</div>
         <span role="img" aria-label="emoji" className={cx.emoji}>
           😎
         </span>
@@ -235,9 +235,7 @@ const Home = ({width, height, picDim}) => (
       <div
         style={{right: 0, paddingRight: 20}}
         className={`${cx.portrait} flex items-start absolute`}>
-        <Tooltip style={{transform: 'translateY(-10px)'}}>
-          {'Alright...'}
-        </Tooltip>
+        <Tooltip style={{transform: 'translateY(0px)'}} />
         <div className={cx.polaroid}>
           <PixelPic
             width={picDim.width}

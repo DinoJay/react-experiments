@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import * as d3 from 'd3';
 import labella from 'labella';
-import { AxisBottom } from '@vx/axis';
-import { AnnotationLabel } from 'react-annotation';
+import {AxisBottom} from '@vx/axis';
+import {AnnotationLabel} from 'react-annotation';
 // import 'd3-svg-annotation/d3-annotation.css';
 
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import cxx from './index.scss';
@@ -55,17 +55,17 @@ const lowOpacity = 0.05;
 
 function layoutLabels(data, width, bboxes, pad = 12) {
   const nodes = data.map(
-    d => new labella.Node(d.tx, bboxes[d.id].width + pad, d.data)
+    d => new labella.Node(d.tx, bboxes[d.id].width + pad, d.data),
   );
 
   // TODO: does not work yet
   const minNodeIndex = nodes.reduce(
     (acc, d) => (data.find(e => e.id === acc).tx > d.tx ? d.id : acc),
-    data[0].id
+    data[0].id,
   );
   const maxNodeIndex = nodes.reduce(
     (acc, d) => (data.find(e => e.id === acc).tx < d.tx ? d.id : acc),
-    data[0].id
+    data[0].id,
   );
 
   // console.log('minNodeIndex', minNodeIndex, 'maxNodeIndex', maxNodeIndex);
@@ -112,7 +112,7 @@ function layoutLabels(data, width, bboxes, pad = 12) {
 //   // return d3.line()(pathData);
 // }
 
-function Dimensions({ data, colorScale, width, focused }) {
+function Dimensions({data, colorScale, width, focused}) {
   const opacity = d => {
     if (!focused || d.data.includes(focused)) return fullOpacity;
     return lowOpacity;
@@ -134,8 +134,7 @@ function Dimensions({ data, colorScale, width, focused }) {
           dy={d.up ? -7 : 20}
           fill={colorScale(d.type)}
           alignmentBaseline={d.up ? null : 'hanging'}
-          style={opacityStyle(d)}
-        >
+          style={opacityStyle(d)}>
           {d.type}
         </text>
         <line
@@ -168,6 +167,7 @@ class Labella extends Component {
     mouseHandler: PropTypes.func,
     focused: PropTypes.string
   };
+
   static defaultProps = {
     children: d => <div>{d}</div>,
     data: [],
@@ -180,10 +180,10 @@ class Labella extends Component {
 
   constructor(props) {
     super(props);
-    const { data, dimensions, gap, width } = props;
+    const {data, dimensions, gap, width} = props;
 
     const inputData = data.map(d => ({
-      data: { ...d, x: 0, y: 0 },
+      data: {...d, x: 0, y: 0},
       note: {
         label: d.description,
         title: d.title,
@@ -193,7 +193,7 @@ class Labella extends Component {
       },
       // className: cxx.note,
       // style: { opacity: 0 },
-      connector: { type: 'elbow' },
+      connector: {type: 'elbow'},
       subject: {
         // radius: 20
         // innerRadius: d.r,
@@ -203,7 +203,7 @@ class Labella extends Component {
     }));
 
     const bboxes = inputData.reduce((acc, d) => {
-      acc[d.id] = { width: d.data.width, height: 90 };
+      acc[d.id] = {width: d.data.width, height: 90};
       return acc;
     }, {});
 
@@ -225,25 +225,25 @@ class Labella extends Component {
     const personalNodesDown = layoutLabels(
       personalAnno.slice(-1).map(moveDown(dimensions.personal)),
       width,
-      bboxes
+      bboxes,
     );
 
     const personalNodesUp = layoutLabels(
       personalAnno.slice(0, -1).map(moveUp(dimensions.personal)),
       width,
-      bboxes
+      bboxes,
     );
 
     const eduNodesUp = layoutLabels(
       eduAnno.map(moveUp(dimensions.education)),
       width,
-      bboxes
+      bboxes,
     );
 
     const eduNodesDown = layoutLabels(
       eduAnno.slice(-2).map(moveDown(dimensions.education, -1)),
       width,
-      bboxes
+      bboxes,
     );
 
     // layoutLabels(
@@ -258,13 +258,13 @@ class Labella extends Component {
         .map(moveDown(dimensions.work))
         .concat(geoAnno.slice(0, 1).map(moveDown(dimensions.work, -30))),
       width,
-      bboxes
+      bboxes,
     );
 
     const geoNodesDown = layoutLabels(
       geoAnno.map(moveDown(dimensions.geography)),
       width,
-      bboxes
+      bboxes,
     );
 
     // const personalAnno = inputData.filter(d => d.data.type === 'personal');
@@ -280,7 +280,7 @@ class Labella extends Component {
       ...workNodesDown
     ];
 
-    this.state = { bboxes, nodes };
+    this.state = {bboxes, nodes};
   }
 
   // componentDidMount() {
@@ -301,9 +301,10 @@ class Labella extends Component {
   // }
 
   refBoxes = {};
+
   render() {
-    const { nodes } = this.state;
-    const { mouseHandler, focused } = this.props;
+    const {nodes} = this.state;
+    const {mouseHandler, focused} = this.props;
 
     const enable = id => {
       if (!focused) return cxx.note;
@@ -357,8 +358,10 @@ function TimeSegments({
   return (
     <g>
       {data.map((d, i) => (
-        <g>
+        <g className="cursor-pointer">
           <path
+            onMouseEnter={() => mouseHandler(d.id)}
+            onMouseLeave={() => mouseHandler(null)}
             d={d3.line()([
               [d.x, d.y],
               [d.x, height / 2],
@@ -366,7 +369,7 @@ function TimeSegments({
               [d.x, d.y]
             ])}
             fill={colorScale(d.type)}
-            style={{ opacity: opacityPath(d.id), transition: 'opacity .5s' }}
+            style={{opacity: opacityPath(d.id), transition: 'opacity .5s'}}
             stroke={colorScale(d.type)}
             clipPath={`url(#clip${i})`}
           />
@@ -430,7 +433,7 @@ class Timeline extends Component {
   }
 
   initialize(props) {
-    const { width, height, data } = props || this.props;
+    const {width, height, data} = props || this.props;
 
     const inputData = data.map((d, i) => {
       d.id = `${i}id`;
@@ -475,7 +478,7 @@ class Timeline extends Component {
       data: inputData.filter(d => d.type === 'work').map(d => d.id)
     };
 
-    const dimensions = { work, education, personal, geography };
+    const dimensions = {work, education, personal, geography};
     const timePoints = inputData.map(d => _.cloneDeep(d)).map(d => {
       d.startDate = d.date;
       d.endDate = d.endDate;
@@ -516,7 +519,7 @@ class Timeline extends Component {
       };
     });
 
-    return { annoData, timeScale, timePoints, dimensions, focused: null };
+    return {annoData, timeScale, timePoints, dimensions, focused: null};
   }
 
   // componentDidMount() {
@@ -524,8 +527,9 @@ class Timeline extends Component {
   // }
 
   refBoxes = {};
+
   render() {
-    const { width, height } = this.props;
+    const {width, height} = this.props;
 
     const {
       dimensions,
@@ -543,12 +547,7 @@ class Timeline extends Component {
     const colorScale = d3
       .scaleOrdinal()
       .domain(keys)
-      .range([
-        'rgb(31, 119, 180)',
-        'rgb(255, 127, 14)',
-        'rgb(44, 160, 44)',
-        'rgb(148, 103, 189)'
-      ]);
+      .range(['#20bf6b', 'orange', 'tomato', 'rgba(0,159,227,0.7)']);
 
     // const trange = [
     //   d3.timeYear.floor(timeScale.domain()[0]),
@@ -568,7 +567,7 @@ class Timeline extends Component {
             colorScale={colorScale}
             data={timePoints}
             focused={focused}
-            mouseHandler={id => this.setState({ focused: id })}
+            mouseHandler={id => this.setState({focused: id})}
           />
           <Dimensions
             data={dimensions}
@@ -579,12 +578,12 @@ class Timeline extends Component {
           <AxisBottom
             scale={timeScale}
             top={height / 2 - timeAxisHeight / 2 + 2}
-            stroke={'#1b1a1e'}
-            tickTextFill={'#1b1a1e'}
+            stroke="#1b1a1e"
+            tickTextFill="#1b1a1e"
             tickTextFontSize={14}
           />
           <Labella
-            mouseHandler={id => this.setState({ focused: id })}
+            mouseHandler={id => this.setState({focused: id})}
             data={annoData}
             width={width}
             gap={gap}
