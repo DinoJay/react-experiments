@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import uniq from 'lodash/uniq';
 import * as d3 from 'd3';
 import labella from 'labella';
 import {AxisBottom} from '@vx/axis';
@@ -44,11 +44,11 @@ const line = d3
   .x(d => d.x)
   .y(d => d.y);
 
-const keys = _.uniq(rawData.map(d => d.type));
+const keys = uniq(rawData.map(d => d.type));
 
 const normalOpacity = 0.2;
 const fullOpacity = 1;
-const lowOpacity = 0.05;
+const lowOpacity = 0.1;
 
 // const delay = 300;
 // const peakLength = 1;
@@ -119,7 +119,7 @@ function Dimensions({data, colorScale, width, focused}) {
   };
   const opacityStyle = d => ({
     opacity: opacity(d),
-    transition: 'opacity .2s'
+    transition: 'opacity 0.3s'
   });
   const dims = Object.keys(data)
     .map(key => ({
@@ -368,8 +368,13 @@ function TimeSegments({
               [capX(d.x + d.shapeWidth), height / 2],
               [d.x, d.y]
             ])}
-            fill={colorScale(d.type)}
-            style={{opacity: opacityPath(d.id), transition: 'opacity .5s'}}
+            style={{
+              fill: colorScale(d.type), // '#404040',
+              opacity: opacityPath(d.id),
+              transition: 'opacity .5s',
+              strokeWidth: 2,
+              stroke: '#404040'
+            }}
             stroke={colorScale(d.type)}
             clipPath={`url(#clip${i})`}
           />

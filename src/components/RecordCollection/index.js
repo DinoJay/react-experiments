@@ -25,7 +25,11 @@ defaultData.forEach((d, i) => {
   d.id = i;
 });
 
-const url = `https://api.discogs.com/users/anarcho123/collection/folders/0/releases?sort=added&sort_order=desc&key=CHTgPJQvhItQQIGlwGDQ&secret=ycmSSHkasuEAGnarRUmhbsrukjKzShaN`;
+const keys = `&key=${process.env.discogsKey}&secret=${
+  process.env.discogsSecret
+}`;
+
+const url = `https://api.discogs.com/users/anarcho123/collection/folders/0/releases?sort=added&sort_order=desc${keys}`;
 
 // console.log('defaultData', defaultData);
 
@@ -42,7 +46,14 @@ export default props => {
     fetch(url, {mode: 'cors'})
       .then(response => response.json())
       .then(result => {
-        console.log('discogsData', result);
+        console.log('result', result);
+        result.releases.map(rec => {
+          fetch(`${rec.basic_information.resource_url}?${keys}`, {mode: 'cors'})
+            .then(response => response.json())
+            .then(extRec => {
+              console.log('extRec', extRec);
+            });
+        });
       });
   }, []);
   return <RecordCollectionPage {...props} pad={30} data={defaultData} />;

@@ -5,7 +5,7 @@
 }
 
 .text-svg {
-  fill: config('colors.black');
+  fill: black; //config('colors.black');
 }
 
 .annotation path {
@@ -73,7 +73,7 @@
 
 .annotation-note-bg {
   fill: white;
-  fill-opacity: 0.7;
+  fill-opacity: 0.8;
   // stroke: config('colors.black');
   // stroke-width: 2px;
 }

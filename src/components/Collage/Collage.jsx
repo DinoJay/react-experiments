@@ -1,5 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+
+import {wrapGrid} from 'animate-css-grid';
+
 // import $ from 'jquery';
 // import chroma from 'chroma-js';
 
@@ -51,8 +54,19 @@ Title.defaultProps = {
 function Collage(props) {
   const {width, height, data} = props;
   const [mouseXY, setMouseXY] = useState([0, 0]);
+  const [id, setId] = useState(null);
 
-  const stampNodes = data.filter(d => !d.header).slice(0, 40);
+  const filteredData = id !== null ? data.filter(d => d.id === id) : data;
+
+  const gridRef = React.createRef();
+
+  useEffect(() => {
+    wrapGrid(gridRef.current, {
+      // easing: 'backOut',
+      stagger: 10,
+      duration: 300
+    });
+  }, []);
 
   const colNumber = 9;
   const rowNumber = 5;
@@ -64,48 +78,46 @@ function Collage(props) {
   // const rowSpan = 1;
   return (
     <div
-      onMouseMove={e => setMouseXY([e.clientX, e.clientY])}
+      ref={gridRef}
       className="flex-grow pr-8 pb-6"
       style={{
         // width: `${width}px`,
         height: `${height}px`,
         position: 'relative',
         display: 'grid',
-        gridTemplateColumns: `repeat(${colNumber}, 1fr)`,
-        gridTemplateRows: `repeat( ${rowNumber}, 1fr)`,
+        gridTemplateColumns: `repeat(${id === null ? colNumber : 1}, 1fr)`,
+        gridTemplateRows: `repeat( ${id === null ? rowNumber : 1}, 1fr)`,
+        gridGap: 10,
+
+        // justifyContent: 'center',
+        // gridTemplateColumns: 'repeat(auto-fit, minmax(10rem, auto))',
+        // gridTemplateRows: 'minmax(1fr, 20rem)',
+        // gridAutoRows: '1fr',
       }}>
       <Title
         className="z-10 bg-white border-4 border-black text-black"
-        x={mouseXY[0]}
-        y={mouseXY[1]}
         style={{
+          display: id !== null && 'none',
           gridColumn: `${3} / span ${titleColSpan}`,
           gridRow: `${Math.ceil(rowNumber / 2)}/ span ${titleRowSpan}`,
         }}>
         Brussels
       </Title>
 
-      {stampNodes.map(d => (
-        <div
+      {filteredData.map(d => (
+        <img
           className={cxx.stamp}
+          key={d.id}
+          onClick={() => (d.id === id ? setId(null) : setId(d.id))}
+          src={d.url_c}
           style={{
-            gridColumn: `span ${photoColSpan}`,
-            gridRow: `span ${photoRowSpan}`,
-            width: '130%',
-            height: '120%',
-            position: 'relative',
-          }}>
-          <img
-            className="img-filter"
-            src={d.src}
-            style={{
-              position: 'absolute',
-              height: '100%',
-              width: '100%',
-              objectFit: 'cover',
-            }}
-          />
-        </div>
+            width: id !== null ? '100%' : 0,
+            height: id !== null ? '100%' : 0,
+            minWidth: id === null ? '120%' : 0,
+            minHeight: id === null ? '120%' : 0,
+            // objectFit: 'cover',
+          }}
+        />
       ))}
     </div>
   );
