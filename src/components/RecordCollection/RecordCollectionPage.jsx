@@ -22,7 +22,7 @@ const isSubset = (t0, t1) => {
 // import Modal from '../utils/Modal';
 const Record = ({
   title,
-  tags,
+  styles,
   img,
   width,
   height,
@@ -71,7 +71,7 @@ const Record = ({
 function aggregateByTags(data) {
   const spreadData = flatten(
     data.map(d =>
-      d.tags.map(t => {
+      d.styles.map(t => {
         const copy = _.cloneDeep(d);
         copy.key = t;
         return copy;
@@ -98,9 +98,9 @@ const HookedColl = props => {
 
   const stackBorder = Math.ceil(data.length / 2);
   const selectedRecord = data.find(d => d.id === selectedId) || null;
-  const selectedTags = selectedRecord ? selectedRecord.tags : [];
+  const selectedTags = selectedRecord ? selectedRecord.styles : [];
   const selectedRecIds = data
-    .filter(d => isSubset(d.tags, selectedTags))
+    .filter(d => isSubset(d.styles, selectedTags))
     .map(d => d.id);
 
   const selectedIndex = data.findIndex(d => d.id === selectedId);
@@ -128,7 +128,7 @@ const HookedColl = props => {
   };
 
   // const treemapData = makeTreemap({
-  //   data: tags,
+  //   data: styles,
   //   width,
   //   height: cloudHeight,
   //   padX: 5,
@@ -148,11 +148,10 @@ const HookedColl = props => {
   const imgFilterClass = chId =>
     selectedId !== chId ? 'sepia-img-filter' : 'sepia-img-filter-disabled';
 
-  const highlight = chId => {
-    return selectedRecIds.includes(chId)
+  const highlight = chId =>
+    selectedRecIds.includes(chId)
       ? 'sepia-img-filter'
       : 'sepia-img-filter-disabled';
-  };
 
   const StackOne = (
     <Stack {...stackConf} data={firstItems} selectedIndex={firstIndex}>
