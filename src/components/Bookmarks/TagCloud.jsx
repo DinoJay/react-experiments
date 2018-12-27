@@ -19,24 +19,23 @@ import cxx from './TagCloud.scss';
 function autoSizeText(container, attempts = 200, width, height) {
   const resizeText = el => {
     attempts--;
-    let elNewFontSize;
-    if (
-      el.style.fontSize === '' ||
-      el.style.fontSize === 'inherit' ||
-      el.style.fontSize === 'NaN'
-    ) {
-      elNewFontSize = '60px'; // largest font to start with
-    } else {
-      elNewFontSize = `${parseInt(el.style.fontSize.slice(0, -2), 10) - 1}px`;
-    }
-    el.style.fontSize = elNewFontSize;
-
-    // this function can crash the app, so we need to limit it
-    if (attempts <= 0) {
-      return;
-    }
-
     if (el.scrollWidth > width || el.scrollHeight > height) {
+      let elNewFontSize;
+      if (
+        el.style.fontSize === '' ||
+        el.style.fontSize === 'inherit' ||
+        el.style.fontSize === 'NaN'
+      ) {
+        elNewFontSize = '200px'; // largest font to start with
+      } else {
+        elNewFontSize = `${parseInt(el.style.fontSize.slice(0, -2), 10) - 1}px`;
+      }
+      el.style.fontSize = elNewFontSize;
+
+      // this function can crash the app, so we need to limit it
+      if (attempts <= 0) {
+        return;
+      }
       resizeText(el);
     }
   };
@@ -63,7 +62,7 @@ export class Tag extends React.Component {
     children: 0,
     color: 'blue',
     fill: 'white',
-    padding: 10,
+    padding: 5,
     clickHandler: () => null
   };
 
@@ -71,11 +70,15 @@ export class Tag extends React.Component {
     const {width, height, padding} = this.props;
 
     // fitty(this.node);
-    autoSizeText(this.node, 100, width - padding, height - padding);
+    autoSizeText(this.node, 200, width - padding, height - padding);
     // autoSizeText(node, 10, width - 2 * 10, height - 2 * 10);
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const {width, height, padding} = this.props;
+
+    // fitty(this.node);
+    autoSizeText(this.node, 200, width - padding, height - padding);
     // const {width, height, padding} = this.props;
     // autoSizeText(this.node, 100, width - padding, height - padding);
     // fitty(this.node, {maxSize: 80});
@@ -101,33 +104,43 @@ export class Tag extends React.Component {
       padding,
       selected,
       style,
-      className, textStyle
+      className,
+      textStyle,
+      onClick,
+      highlighted,
+      visible,
+      count
     } = this.props;
 
     return (
       <div
         className={`${
           cxx.tag
-        } flex border-1 flex-col items-center justify-center text-xl ${className}`}
+        } cursor-pointer flex border-1 flex-col items-center justify-center ${
+          highlighted ? 'bg-black ' : 'bg-white'
+        }`}
         style={{
           left,
           top,
           width,
           height,
           transition: 'all 400ms',
+          opacity: visible ? 1 : 0.4,
           ...style
           // wordBreak: 'break-all'
         }}
         onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}>
+        onMouseLeave={onMouseLeave}
+        onClick={visible ? onClick : d => d}>
         <div
-          className="m-2"
+          className={`${highlighted && 'text-white'}`}
           ref={el => (this.node = el)}
           style={{
-            display: 'inline-block',
-            whiteSpace: 'nowrap', ...textStyle
+            fontSize: 89,
+            // display: 'inline-block',
+            whiteSpace: 'nowrap',
           }}>
-          {data.key}
+          {data.key} {visible ? count : '∅'}
         </div>
       </div>
     );

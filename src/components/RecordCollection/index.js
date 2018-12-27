@@ -26,9 +26,20 @@ export default props => {
     fetch(url, {mode: 'cors'})
       .then(response => response.json())
       .then(result => {
-        setData(result);
-        console.log('result', result);
+        const formattedData = result
+          .map(d => ({
+            ...d,
+            milliseconds: Date.parse(d.dateAdded)
+          }))
+          .sort((a, b) => b.milliseconds - a.milliseconds);
+        setData(formattedData);
       });
   }, []);
-  return <RecordCollectionPage {...props} pad={30} data={data.slice(0,50)} />;
+  return (
+    <RecordCollectionPage
+      {...props}
+      pad={30}
+      data={data.reverse().slice(0, 40)}
+    />
+  );
 };

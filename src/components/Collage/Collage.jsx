@@ -19,15 +19,24 @@ const textShadow = (rYP, rXP) =>
 const Title = props => {
   const {children, style, className, x = 0, y = 0} = props;
   const pad = 7;
+  const ref = React.createRef();
+
+  // useEffect(() => {
+  //   const cur = ref.current;
+  //   // cur.setAttribute('style', 'transform: translateX(-5%) rotate(-3deg)');
+  //   console.log('ref cur', cur);
+  // });
+
   return (
     <div
+      ref={ref}
       className={`${
         cxx.title
       } child-borders flex flex-col justify-center items-center ${className}`}
       style={{
         ...style,
         width: '110%',
-        transform: 'translateX(-5%) rotate(-3deg)',
+        // transform: 'translateX(-5%) rotate(-3deg)',
       }}>
       <div className="flex-grow flex flex-col justify-center items-center ">
         <h1

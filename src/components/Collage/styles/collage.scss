@@ -38,7 +38,7 @@
 }
 
 .title {
-  transform: translateZ(5px);
+  // transform: translateZ(5px);
 }
 
 // .title:nth-child(3) {
@@ -92,10 +92,11 @@
 }
 
 .title {
+  // transform: translateX(-5%) rotate(-3deg) !important;
   // animation: wobble 5s ease-in-out infinite;
-  transform-origin: center center;
-  transform-style: preserve-3d;
-  transform: rotate3d(-1, -1, 0, 25deg);
+  // transform-origin: center center;
+  // transform-style: preserve-3d;
+  // transform: translateX(-5%) rotate(-3deg);
   // z-index: 2;
 
   .text {
@@ -106,8 +107,8 @@
     // transform: translateX(50%);
     // color: white;
     // stroke: black;
-    stroke-width: 4px;
-    stroke-linejoin: round;
+    // stroke-width: 4px;
+    // stroke-linejoin: round;
     // -moz-text-fill-color: white;
     // -webkit-text-fill-color: white;
     // -moz-text-stroke-color: black;

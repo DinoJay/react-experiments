@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import flatten from 'lodash/flatten';
 import intersection from 'lodash/intersection';
-// import $ from 'jquery';
+import uniq from 'lodash/uniq';
 
 import TagCloud, {Tag} from '../Bookmarks/TagCloud';
 
@@ -35,22 +35,21 @@ const Record = ({
   ...rest
 }) => (
   <div
+    className={`${className} p-2`}
     onMouseOver={onMouseOver}
     onMouseOut={onMouseOut}
     style={{
-      zIndex: 2,
-      background: `url(${VinylIcon}) center center no-repeat`,
       ...style
     }}>
     <img
-      className={className}
-      style={{
-        boxShadow:
-          '0 5px 2px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(0, 0, 0, 0.3)'
-      }}
       src={img}
       alt=""
-      style={{objectFit: 'cover', height: '100%', width: '100%'}}
+      style={{
+        background: `url(${VinylIcon}) center center no-repeat`,
+        objectFit: 'cover',
+        height: '100%',
+        width: '100%'
+      }}
     />
   </div>
 );
@@ -84,10 +83,40 @@ function aggregateByTags(data) {
     .entries(spreadData);
 }
 
+const RecordStack = ({
+  stackConf,
+  data,
+  selectedIndex,
+  className,
+  onMouseOver,
+  onMouseOut,
+  recHeight,
+  recWidth
+}) => (
+  <div className="overflow-hidden">
+    <Stack {...stackConf} data={data} selectedIndex={selectedIndex}>
+      {ch => (
+        <Record
+          {...ch}
+          key={ch.id}
+          className={className}
+          style={{
+            height: recHeight,
+            width: recWidth
+          }}
+          onMouseOver={onMouseOver(ch)}
+          onMouseOut={onMouseOut}
+          img={ch.thumb}
+        />
+      )}
+    </Stack>
+  </div>
+);
+
 const HookedColl = props => {
   const {
-    cardHeight = 150,
-    cardWidth = 150,
+    recHeight = 170,
+    recWidth = 170,
     width,
     height,
     pad,
@@ -95,15 +124,54 @@ const HookedColl = props => {
     tags
   } = props;
   const [selectedId, setSelectedId] = useState(null);
+  const [filterSet, setFilterSet] = useState([]);
+  const relateTags = set =>
+    uniq(
+      data.reduce(
+        (acc, d) => (isSubset(d.styles, set) ? [...acc, ...d.styles] : acc),
+        [],
+      ),
+    );
+  const relatedTags = relateTags(filterSet);
 
-  const stackBorder = Math.ceil(data.length / 2);
+  const filterRecs = s =>
+    data.filter(d => isSubset(s, d.styles) || s.length === 0);
+
+  const filteredData = filterRecs(filterSet);
+
+  const countMap = (filterSet.length > 0
+    ? relatedTags
+    : tags.map(d => d.key)
+  ).reduce((acc, d) => {
+    const plusNumRec =
+      filterRecs([...filterSet, d]).length - filteredData.length;
+
+    return {
+      ...acc,
+      [d]:
+        filterSet.includes(d) || filterSet.length === 0
+          ? filterRecs([d]).length
+          : `Δ${plusNumRec}`,
+    };
+  }, {});
+
+  console.log(
+    'countMap',
+    countMap,
+    'filteredDatalen',
+    filteredData.length,
+    'relatedTags',
+    relatedTags,
+  );
+
+  const stackBorder = Math.ceil(filteredData.length / 2);
   const selectedRecord = data.find(d => d.id === selectedId) || null;
-  const selectedTags = selectedRecord ? selectedRecord.styles : [];
-  const selectedRecIds = data
-    .filter(d => isSubset(d.styles, selectedTags))
+  const highlightedTags = selectedRecord ? selectedRecord.styles : [];
+  const selectedRecIds = filteredData
+    .filter(d => isSubset(d.styles, highlightedTags))
     .map(d => d.id);
 
-  const selectedIndex = data.findIndex(d => d.id === selectedId);
+  const selectedIndex = filteredData.findIndex(d => d.id === selectedId);
 
   const firstIndex =
     selectedIndex !== -1 && selectedIndex < stackBorder ? selectedIndex : null;
@@ -113,18 +181,18 @@ const HookedColl = props => {
       ? selectedIndex - stackBorder
       : null;
 
-  const firstItems = data.slice(0, stackBorder);
-  const secItems = data.slice(stackBorder);
+  const firstItems = filteredData.slice(0, stackBorder);
+  const secItems = filteredData.slice(stackBorder);
 
-  const cloudHeight = height - 2 * cardHeight - 2 * pad;
+  const cloudHeight = height - 2 * recHeight - 2 * pad;
 
   const stackConf = {
     centered: false,
     duration: 400,
     width,
     unit: 'px',
-    height: 100,
-    slotSize: cardWidth,
+    height: 200,
+    slotSize: recWidth,
   };
 
   // const treemapData = makeTreemap({
@@ -136,14 +204,15 @@ const HookedColl = props => {
   // });
 
   const onMouseOver = d => () => {
-    setSelectedId(d.id);
+    if (firstItems.find(e => e.id === d.id)) {
+      if (firstItems.length > 4) setSelectedId(d.id);
+    }
+    if (secItems.length > 4) setSelectedId(d.id);
   };
 
   const onMouseOut = () => {
     setSelectedId(null);
   };
-
-  const onClick = id => () => null;
 
   const imgFilterClass = chId =>
     selectedId !== chId ? 'sepia-img-filter' : 'sepia-img-filter-disabled';
@@ -153,42 +222,32 @@ const HookedColl = props => {
       ? 'sepia-img-filter'
       : 'sepia-img-filter-disabled';
 
+  const sharedStackConf = {
+    stackConf,
+    selectedId,
+    onMouseOver,
+    onMouseOut,
+    recHeight,
+    recWidth
+  };
+
   const StackOne = (
-    <Stack {...stackConf} data={firstItems} selectedIndex={firstIndex}>
-      {ch => (
-        <Record
-          key={ch.id}
-          className={highlight(ch.id)}
-          onMouseOver={onMouseOver(ch)}
-          onMouseOut={onMouseOut}
-          style={{height: cardHeight, width: 160}}
-          img={ch.thumb}
-          {...ch}
-        />
-      )}
-    </Stack>
+    <RecordStack
+      data={firstItems}
+      selectedIndex={firstIndex}
+      {...sharedStackConf}
+    />
   );
 
   const StackTwo = (
-    <Stack {...stackConf} data={secItems} selectedIndex={secIndex}>
-      {(ch, i) => (
-        <Record
-          key={ch.id}
-          className={highlight(ch.id)}
-          onMouseOver={onMouseOver(ch)}
-          onMouseOut={onMouseOut}
-          onClick={onClick(i)}
-          style={{height: cardHeight, width: cardWidth}}
-          img={ch.thumb}
-          {...ch}
-        />
-      )}
-    </Stack>
+    <RecordStack
+      data={secItems}
+      selectedIndex={secIndex}
+      {...sharedStackConf}
+    />
   );
 
-  // const { width, height } = this.props;
-  const stackDim = {height: cardHeight};
-  console.log('selectedTags', selectedTags, 'selectedCards', selectedRecIds);
+  const stackDim = {height: recHeight};
 
   return (
     <div>
@@ -206,16 +265,30 @@ const HookedColl = props => {
           height={cloudHeight}
           padX={10}
           padY={10}
-          onHover={d => console.log('yeah', d)}
-          onClick={() => null}>
+          onHover={d => console.log('yeah', d)}>
           {(d, i) => (
             <Tag
-              className={`border-${(i % 6) + 1}x ${isSubset(
-                [d.key],
-                selectedTags,
-              ) && 'bg-black'}`}
+              count={countMap[d.key]}
+              highlighted={
+                isSubset([d.key], highlightedTags) ||
+                isSubset(filterSet, [d.key])
+              }
+              visible={
+                relatedTags.length === 0 || isSubset(relatedTags, [d.key])
+              }
+              onClick={() => {
+                setFilterSet(
+                  filterSet.includes(d.key)
+                    ? filterSet.filter(k => k !== d.key)
+                    : filterSet.concat(d.key),
+                );
+              }}
+              onMouseEnter={() => {
+                console.log('yeah');
+              }}
+              onMouseLeave={() => null}
+              className={`border-${(i % 6) + 1}x`}
               {...d}
-              textStyle={{color: isSubset([d.key], selectedTags) && 'white'}}
             />
           )}
         </TagCloud>

@@ -124,20 +124,39 @@ function selectBaseLayout({index = null, data, frameOffset, width}) {
     .scaleLinear()
     .domain([index + 1, data.length - 1])
     .range([
-      d3.min([scale(index) + frameOffset / 2, width - frameOffset / 2]),
-      width - frameOffset / 2,
+      d3.min([scale(index) + frameOffset / 2, width]),
+      width,
     ]);
 
   return data.map((c, i) => {
     if (index < i) {
-      return {index: i, hovered: false, pos: xFirstRight(i)};
+      return {
+        index: i,
+        zIndex: i,
+        id: c.id,
+        hovered: false,
+        pos: xFirstRight(i)
+      };
     }
     if (index > i) {
-      return {index: i, hovered: false, pos: xFirstLeft(i)};
+      return {
+        index: i,
+        zIndex: i,
+        id: c.id,
+        hovered: false,
+        pos: xFirstLeft(i)
+      };
     }
     if (index === i) {
       c.hovered = true;
-      return {index: i, hovered: true, pos: scale(i)};
+      return {
+        index: i,
+        id: c.id,
+        hovered: true,
+        pos: scale(i),
+        zIndex: 200,
+        inCenter: true
+      };
     }
     return c;
   });
@@ -191,7 +210,6 @@ export default class CardStack extends Component {
       direction
     } = this.props;
 
-    console.log('STACK selectedIndex', selectedIndex);
     if (data.length === 0) return null;
 
     // if (centered && !isPosInt(selectedIndex))
@@ -208,7 +226,7 @@ export default class CardStack extends Component {
         return selectBaseLayout({
           index: selectedIndex,
           data,
-          frameOffset: slotSize*2,
+          frameOffset: slotSize * 2,
           width,
         });
       return baseLayout({...this.props, data: keyData});
@@ -217,7 +235,7 @@ export default class CardStack extends Component {
     const centerPos = c =>
       direction === 'vertical'
         ? {top: `${c.pos}${unit}`}
-        : {left: `${c.pos}${unit}`, zIndex: c.zIndex};
+        : {left: `${c.pos}${unit}`};
 
     const slotWidth = `${slotSize}${unit}`;
 
