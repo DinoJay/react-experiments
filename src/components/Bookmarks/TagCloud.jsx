@@ -109,7 +109,8 @@ export class Tag extends React.Component {
       onClick,
       highlighted,
       visible,
-      count
+      count,
+      text
     } = this.props;
 
     return (
@@ -140,7 +141,7 @@ export class Tag extends React.Component {
             // display: 'inline-block',
             whiteSpace: 'nowrap',
           }}>
-          {data.key} {visible ? count : '∅'}
+          {text}
         </div>
       </div>
     );

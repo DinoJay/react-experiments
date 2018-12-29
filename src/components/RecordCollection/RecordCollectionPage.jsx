@@ -139,25 +139,26 @@ const HookedColl = props => {
 
   const filteredData = filterRecs(filterSet);
 
-  const countMap = (filterSet.length > 0
-    ? relatedTags
-    : tags.map(d => d.key)
-  ).reduce((acc, d) => {
+  const labelMap = tags.map(d => d.key).reduce((acc, d) => {
     const plusNumRec =
       filterRecs([...filterSet, d]).length - filteredData.length;
 
+    const label = (() => {
+      if (filterSet.length === 0) return d;
+      if (filterSet.includes(d)) return `${d} ${filterRecs([d]).length}`;
+      if (relatedTags.includes(d)) return `${d} Δ${plusNumRec}`;
+      return <div style={{textDecoration: 'line-through'}}>{d}</div>;
+    })();
+
     return {
       ...acc,
-      [d]:
-        filterSet.includes(d) || filterSet.length === 0
-          ? filterRecs([d]).length
-          : `Δ${plusNumRec}`,
+      [d]: label
     };
   }, {});
 
   console.log(
-    'countMap',
-    countMap,
+    'labelMap',
+    labelMap,
     'filteredDatalen',
     filteredData.length,
     'relatedTags',
@@ -268,7 +269,6 @@ const HookedColl = props => {
           onHover={d => console.log('yeah', d)}>
           {(d, i) => (
             <Tag
-              count={countMap[d.key]}
               highlighted={
                 isSubset([d.key], highlightedTags) ||
                 isSubset(filterSet, [d.key])
@@ -289,6 +289,7 @@ const HookedColl = props => {
               onMouseLeave={() => null}
               className={`border-${(i % 6) + 1}x`}
               {...d}
+              text={labelMap[d.key]}
             />
           )}
         </TagCloud>

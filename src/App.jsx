@@ -9,7 +9,9 @@ import {
   COLLAGE,
   RECORDCOLLECTION,
   PROJECTS,
-  SCREENSHOTS
+  SCREENSHOTS,
+  QUOTES_AND_NOTES,
+  MIXTAPES
 } from './routePaths';
 
 const SMALL_HEIGHT = 690;
@@ -32,6 +34,10 @@ const selectElement = (path, pr) => {
       return <PROJECTS.Comp {...pr} />;
     case SCREENSHOTS.path:
       return <SCREENSHOTS.Comp {...pr} />;
+    case QUOTES_AND_NOTES.path:
+      return <QUOTES_AND_NOTES.Comp {...pr} />;
+    case MIXTAPES.path:
+      return <MIXTAPES.Comp {...pr} />;
     default:
       return <div>Unknown path</div>;
   }
@@ -91,12 +97,14 @@ const Nav = ({clickHandler, path, className}) => {
               </small>
             </a>
           </li>
-          <li className="hidden">
-            <a onClick={clickHandler} href={PROJECTS.path}>
+          <li className="">
+            <a onClick={clickHandler} href={QUOTES_AND_NOTES.path}>
               Blog{' '}
-              <small className="hidden">
-                (projects, mixtapes and other stuff - unfinished)
-              </small>
+            </a>
+          </li>
+          <li className="">
+            <a onClick={clickHandler} href={MIXTAPES.path}>
+              Mixtapes{' '}
             </a>
           </li>
         </ul>

@@ -12,7 +12,7 @@ import {
   COLLAGE,
   RECORDCOLLECTION,
   PROJECTS,
-  SCREENSHOTS,
+  SCREENSHOTS, QUOTES_AND_NOTES, MIXTAPES
 } from './routePaths';
 
 setConfig({pureSFC: true});
@@ -46,6 +46,16 @@ const Routes = () => (
         exact
         path={SCREENSHOTS.path}
         render={() => <App path={SCREENSHOTS.path} />}
+      />
+      <Route
+        exact
+        path={QUOTES_AND_NOTES.path}
+        render={() => <App path={QUOTES_AND_NOTES.path} />}
+      />
+      <Route
+        exact
+        path={MIXTAPES.path}
+        render={() => <App path={MIXTAPES.path} />}
       />
     </Switch>
   </HashRouter>

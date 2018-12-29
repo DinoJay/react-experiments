@@ -1,31 +1,30 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-import prune from 'json-prune';
+import React, {useState, useEffect} from 'react';
 
-// import * as d3 from 'd3';
-import ScreenShotDiary from './ScreenshotDiary';
+import MixtapesPage from './MixtapesPage';
+// import defaultData from '../RecordCollection/dummyData';
 
-import screenshotData from './screenshotData';
+const url = 'https://api.mixcloud.com/deli-jay/cloudcasts/';
 
-'https://api.mixcloud.com/deli-jay/cloudcasts/'
+export default () => {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    fetch(url, {mode: 'cors'})
+      .then(response => response.json())
+      .then(result => {
+        const {data: resultData} = result;
+        console.log('resultData', resultData);
+        return Promise.all(
+          resultData.map(d =>
+            fetch(`https://api.mixcloud.com${d.key}`).then(response =>
+              response.json(),
+            ),
+          ),
+        );
+      })
+      .then(newData => setData(newData));
+  }, []);
 
-class ScreenshotDiaryContainer extends Component {
-  static propTypes = {
-    lessData: PropTypes.bool
-  };
-
-  static defaultProps = {lessData: false};
-
-  constructor(props) {
-    super(props);
-    this.state = {data: [], loadingText: 'Loading Images'};
-  }
-
-  componentDidMount() {}
-
-  render() {
-    return <ScreenShotDiary {...this.props} data={screenshotData} />;
-  }
-}
-
-export default ScreenshotDiaryContainer;
+  return (
+    <MixtapesPage data={data.map(d => ({...d, id: d.key}))} />
+  );
+};
