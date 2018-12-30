@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
 
-function resizeGridItem({grid, item, content}) {
+import {wrapGrid} from 'animate-css-grid';
+
+function resizeGridItem({grid, item}) {
   const rowHeight = parseInt(
     window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'),
   );
@@ -23,12 +25,14 @@ function resizeGridItem({grid, item, content}) {
 // }
 
 const MixtapesPage = ({data}) => {
+  const [id, setId] = useState(null);
+  const [scrollPos, setScrollPos] = useState(null);
   const gridStyle = {
     display: 'grid',
     gridGap: 30,
-    gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+    gridTemplateColumns: `repeat(auto-fit, minmax(250px, 1fr))`,
     gridAutoFlow: 'row dense',
-    gridAutoRows: 10
+    gridAutoRows: id === null ? 10 : null
   };
 
   const [rowSpans, setRowSpans] = useState(
@@ -43,17 +47,27 @@ const MixtapesPage = ({data}) => {
     (acc, d) => ({...acc, [d.id]: React.createRef()}),
     {},
   );
+
+  const filteredData = id !== null ? data.filter(d => d.id === id) : data;
+
+  useEffect(() => {
+    wrapGrid(gridRef.current, {
+      // easing: 'backOut',
+      stagger: 10,
+      duration: 300
+    });
+  }, []);
+
   // const itemRef = React.createRef();
 
   useEffect(
     () => {
-      const newRowSpans = data.reduce(
+      const newRowSpans = filteredData.reduce(
         (acc, d) => ({
           ...acc,
           [d.id]: resizeGridItem({
             grid: gridRef.current,
             item: itemRefs[d.id].current,
-            content: contentRefs[d.id].current
           })
         }),
         {},
@@ -69,9 +83,15 @@ const MixtapesPage = ({data}) => {
   return (
     <div className="h-full w-full overflow-y-auto">
       <div ref={gridRef} className="h-full m-2" style={gridStyle}>
-        {data.reverse().map(d => (
+        {filteredData.reverse().map(d => (
           <div
             key={d.id}
+            onClick={() => {
+              d.id === id ? setId(null) : setId(d.id);
+              const pos =
+                gridRef.current.scrollHeight - gridRef.current.clientHeight;
+              setScrollPos(pos);
+            }}
             className="border border-grey p-5 overflow-hidden"
             ref={itemRefs[d.id]}
             style={{
@@ -88,9 +108,9 @@ const MixtapesPage = ({data}) => {
                 src={d.pictures.medium}
                 style={{width: '100%', height: 200, objectFit: 'cover'}}
               />
-            </div>
-            <div className="overflow-hidden" style={{maxHeight: 200}}>
-              {d.description}
+              <div className="overflow-hidden" style={{}}>
+                {d.description}
+              </div>
             </div>
           </div>
         ))}
