@@ -30,20 +30,20 @@ module.exports = {
   module: {
     rules: loaders,
   },
-  optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        cache: false,
-        parallel: true,
-        uglifyOptions: {
-          compress: false,
-          ecma: 6,
-          mangle: {safari10: true},
-        },
-        sourceMap: false,
-      }),
-    ],
-  },
+  // optimization: {
+  //   minimizer: [
+  //     new UglifyJsPlugin({
+  //       cache: false,
+  //       parallel: true,
+  //       uglifyOptions: {
+  //         compress: false,
+  //         ecma: 6,
+  //         mangle: {safari10: true},
+  //       },
+  //       sourceMap: false,
+  //     }),
+  //   ],
+  // },
   plugins: [
     new CleanWebpackPlugin(['dist/*.*']),
 
@@ -55,4 +55,4 @@ module.exports = {
     }),
     new webpack.EnvironmentPlugin(apiTokens),
   ],
-;
+};

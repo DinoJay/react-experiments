@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import sortBy from 'lodash/sortBy';
 
 import {wrapGrid} from 'animate-css-grid';
 
@@ -29,16 +30,19 @@ const MixtapesPage = ({data}) => {
   const [scrollPos, setScrollPos] = useState(null);
   const gridStyle = {
     display: 'grid',
-    gridGap: 30,
+    gridGap: 15,
     gridTemplateColumns: `repeat(auto-fit, minmax(250px, 1fr))`,
     gridAutoFlow: 'row dense',
-    gridAutoRows: id === null ? 10 : null
+    gridAutoRows: id === null ? 10 : null,
+    gridTemplateRows: id !== null ? '1fr' : null,
+    height: scrollPos > 0 && id === null ? scrollPos : null
   };
 
   const [rowSpans, setRowSpans] = useState(
     data.reduce((d, acc) => ({...acc, [d.id]: null}), {}),
   );
   const gridRef = React.createRef();
+  const scrollRef = React.createRef();
   const contentRefs = data.reduce(
     (acc, d) => ({...acc, [d.id]: React.createRef()}),
     {},
@@ -48,13 +52,15 @@ const MixtapesPage = ({data}) => {
     {},
   );
 
-  const filteredData = id !== null ? data.filter(d => d.id === id) : data;
+  const filteredData =
+    id !== null ? data.filter(d => d.id === id) : sortBy(data, d => d.id);
 
+  console.log('data', data);
   useEffect(() => {
     wrapGrid(gridRef.current, {
       // easing: 'backOut',
       stagger: 10,
-      duration: 300
+      duration: 100,
     });
   }, []);
 
@@ -67,36 +73,39 @@ const MixtapesPage = ({data}) => {
           ...acc,
           [d.id]: resizeGridItem({
             grid: gridRef.current,
-            item: itemRefs[d.id].current,
-          })
+            item: itemRefs[d.id].current
+          }),
         }),
         {},
       );
-      console.log('newRowSpans', newRowSpans);
       setRowSpans(newRowSpans);
     },
     [data.length],
   );
 
-  console.log('rowSpans', rowSpans);
+  useEffect(() => {
+    scrollRef.current.scrollTop = scrollPos;
+  });
 
   return (
-    <div className="h-full w-full overflow-y-auto">
-      <div ref={gridRef} className="h-full m-2" style={gridStyle}>
+    <div
+      className="h-full w-full overflow-x-hidden overflow-y-auto"
+      ref={scrollRef}>
+      <div ref={gridRef} className="m-2 " style={gridStyle}>
         {filteredData.reverse().map(d => (
           <div
             key={d.id}
             onClick={() => {
               d.id === id ? setId(null) : setId(d.id);
-              const pos =
-                gridRef.current.scrollHeight - gridRef.current.clientHeight;
-              setScrollPos(pos);
+              const tmpScrollTop = scrollRef.current.scrollTop;
+              if (id === null) setScrollPos(tmpScrollTop);
             }}
             className="border border-grey p-5 overflow-hidden"
             ref={itemRefs[d.id]}
             style={{
               boxShadow: '4px 4px lightgrey',
-              gridRow: rowSpans[d.id] && `span ${rowSpans[d.id]}`,
+              gridRow:
+                id === null && rowSpans[d.id] && `span ${rowSpans[d.id]}`
             }}>
             <div className="relative">
               <div className="absolute">
@@ -105,10 +114,26 @@ const MixtapesPage = ({data}) => {
                 </div>
               </div>
               <img
+                className={`${id !== null ? 'hidden' : null}`}
                 src={d.pictures.medium}
                 style={{width: '100%', height: 200, objectFit: 'cover'}}
               />
-              <div className="overflow-hidden" style={{}}>
+              <img
+                className={`${id === null ? 'hidden' : null}`}
+                src={d.pictures.large}
+                style={{width: '100%', height: 500, objectFit: 'cover'}}
+              />
+              {id !== null && (
+                <iframe
+                  width="100%"
+                  height="60"
+                  src={`https://www.mixcloud.com/widget/iframe/?hide_cover=1&mini=1&feed=${
+                    d.key
+                  }`}
+                  frameBorder="0"
+                />
+              )}
+              <div className="m-1 overflow-hidden" style={{}}>
                 {d.description}
               </div>
             </div>
